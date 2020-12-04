@@ -9,11 +9,16 @@
 
 using namespace std;
 
+void TwoNumberMatch(vector<int>& costNums);
+void ThreeNumberMatch(vector<int>& costNums);
+
+const int goalSum = 2020;
+
 int main(int argc, char** argv)
 {
 	int i;
 
-    std::cout << "Hello World! argc=" << argc << std::endl;
+	std::cout << "Hello World! argc=" << argc << std::endl;
 
 	for (i = 0; i < argc; i++)
 		std::cout << i << " : " << argv[i] << std::endl;
@@ -36,6 +41,14 @@ int main(int argc, char** argv)
 		costNums.push_back(cost);
 	}
 
+	//TwoNumberMatch(costNums);
+	ThreeNumberMatch(costNums);
+
+	inputfile.close();
+}
+
+void TwoNumberMatch(vector<int>& costNums)
+{
 	int highest = 0;
 	int highestOne = 0;
 	int highestTwo = 0;
@@ -47,7 +60,7 @@ int main(int argc, char** argv)
 		{
 			int secondval = (*second);
 			auto sum = firstval + secondval;
-			if (sum == 2020)
+			if (sum == goalSum)
 			{
 				auto multresult = firstval * secondval;
 				if (multresult > highest)
@@ -65,6 +78,43 @@ int main(int argc, char** argv)
 	cout << " Highest multiplication result = " << highest << endl;
 }
 
+void ThreeNumberMatch(vector<int>& costNums)
+{
+	int highest = 0;
+	int highestOne = 0;
+	int highestTwo = 0;
+	int highest3 = 0;
+
+	for (auto first = costNums.begin(); first != costNums.end() - 2; first++)
+	{
+		int firstval = (*first);
+		for (auto second = first + 1; second != costNums.end() - 1; second++)
+		{
+			int secondval = (*second);
+
+			for (auto third = second + 1; third != costNums.end(); third++)
+			{
+				int thirdval = (*third);
+				auto sum = firstval + secondval + thirdval;
+				if (sum == goalSum)
+				{
+					auto multresult = firstval * secondval * thirdval;
+					if (multresult > highest)
+					{
+						highest = multresult;
+						highestOne = firstval;
+						highestTwo = secondval;
+						highest3 = thirdval;
+					}
+				}
+			}
+		}
+	}
+
+	cout << " First number=" << highestOne << endl;
+	cout << " Second number = " << highestTwo << endl;
+	cout << " Highest multiplication result = " << highest << endl;
+}
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu
 
