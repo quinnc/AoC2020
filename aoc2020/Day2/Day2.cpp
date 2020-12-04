@@ -13,6 +13,7 @@ bool IsPasswordValid(string& passwordLine);
 void ShowInputs(int argc, char** argv);
 void ParseRule(string& rule, int& min, int& max, char& letter);
 bool CheckPassword(string& ps, int min, int max, char letter);
+bool CheckPasswordPart2(string& ps, int min, int max, char letter);
 
 bool OpenAndReadInput(char* filename, vector<string>& lines);
 
@@ -84,14 +85,14 @@ bool IsPasswordValid(string& passwordLine)
 	size_t colonLoc = passwordLine.find(':');
 
 	rule = passwordLine.substr(0, colonLoc);
-	pw = passwordLine.substr(colonLoc + 1, string::npos);
+	pw = passwordLine.substr(colonLoc + 2, string::npos);
 
 	//cout << "rule = " << rule << ", password = " << pw << endl;
 	int min, max;
 	char letter;
 
 	ParseRule(rule, min, max, letter);
-	return CheckPassword(pw, min, max, letter);
+	return CheckPasswordPart2(pw, min, max, letter);
 	
 }
 
@@ -111,6 +112,12 @@ void ParseRule(string& rule, int& min, int& max, char& letter)
 
 	min = stoi(minStr);
 	max = stoi(maxStr);
+	if (min > max)
+	{
+		int t = min;
+		min = max;
+		max = t;
+	}
 	letter = charStr[0];
 
 	//cout << "Min= " << min << ", Max= " << max << ", Letter= " << letter << endl;
@@ -127,6 +134,16 @@ bool CheckPassword(string& ps, int min, int max, char letter)
 	}
 
 	return ((foundCount >= min) && (foundCount <= max));
+}
+
+bool CheckPasswordPart2(string& ps, int min, int max, char letter)
+{
+	//cout << ps << ", l=" << ps.length() << ", max=" << max << endl;
+	if (ps.length() < max)
+		return false;
+
+	//cout << "expected = " << letter << ", @min = " << ps[min - 1] << ", @max = " << ps[max - 1] << endl;
+	return ((ps[min - 1] == letter) == (ps[max - 1] != letter));
 }
 
 bool OpenAndReadInput(char* filename, vector<string>& lines)
