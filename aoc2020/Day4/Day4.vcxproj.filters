@@ -21,5 +21,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="sample.txt" />
+    <Text Include="input.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
