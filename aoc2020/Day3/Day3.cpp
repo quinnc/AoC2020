@@ -28,16 +28,37 @@ int main(int argc, char** argv)
 		return -1;
 	}
 
-	int treesHit = 0;
-	int openSquares = 0;
+	int xslope = 0;
+	int yslope = 1;
+	int multipliedHits = 1;
 
-	SlideHill(lines, 0, 0, 3, 1, treesHit, openSquares);
+	while (yslope > 0)
+	{
+		cout << "Enter x slope and y slope (-1 to quit): ";
+		cin >> xslope >> yslope;
 
-	cout << "Tree hit = " << treesHit << endl;
-	cout << "Open squares = " << openSquares << endl;
-	cout << "Total steps = " << treesHit + openSquares << endl;
-	cout << "Total lines = " << lines.size() << endl;
+		cout << endl;
+		cout << " X: " << xslope << ", Y: " << yslope << endl;
+		cout << endl;
+		if (xslope <= 0 || yslope <= 0)
+			break;
 
+		int treesHit = 0;
+		int openSquares = 0;
+
+		SlideHill(lines, 0, 0, xslope, yslope, treesHit, openSquares);
+
+		cout << "Tree hit = " << treesHit << endl;
+		cout << "Open squares = " << openSquares << endl;
+		cout << "Total steps = " << treesHit + openSquares << endl;
+		cout << "Total lines = " << lines.size() << endl;
+
+		multipliedHits *= treesHit;
+	}
+
+	cout << "Done." << endl;
+	cout << "Multiplied tree hits = " << multipliedHits << endl;
+	cout << endl;
 	return 0;
 }
 
