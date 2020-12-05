@@ -2,19 +2,99 @@
 //
 
 #include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
 
-int main()
+using namespace std;
+
+void ShowInputs(int argc, char** argv);
+bool OpenAndReadInput(char* filename, vector<string>& lines);
+void SlideHill(vector<string>& l, int initX, int initY, int slopeX, int slopeY, int& treesHit, int& openSquares);
+
+int main(int argc, char** argv)
 {
-    std::cout << "Hello World!\n";
+	vector<string> lines;
+
+	std::cout << "Hello World!\n";
+
+	ShowInputs(argc, argv);
+
+	if (argc < 2)
+		return -2;
+
+	if (!OpenAndReadInput(argv[1], lines))
+	{
+		return -1;
+	}
+
+	int treesHit = 0;
+	int openSquares = 0;
+
+	SlideHill(lines, 0, 0, 3, 1, treesHit, openSquares);
+
+	cout << "Tree hit = " << treesHit << endl;
+	cout << "Open squares = " << openSquares << endl;
+	cout << "Total steps = " << treesHit + openSquares << endl;
+	cout << "Total lines = " << lines.size() << endl;
+
+	return 0;
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
+void ShowInputs(int argc, char** argv)
+{
+	
+	//std::cout << "Hello World! argc=" << argc << std::endl;
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+	for (int i = 0; i < argc; i++)
+		std::cout << i << " : " << argv[i] << std::endl;
+}
+
+
+bool OpenAndReadInput(char* filename, vector<string>& lines)
+{
+	fstream inputfile;
+	string line;
+
+	inputfile.open(filename, ios::in);
+
+	if (!inputfile.is_open())
+	{
+		cout << " Unable to open " << filename << endl;
+		return false;
+	}
+
+	while (getline(inputfile, line))
+	{
+		//int cost = std::stoi(line);
+		lines.push_back(line);
+	}
+
+	inputfile.close();
+	return true;
+}
+
+void SlideHill(vector<string>& l, int initX, int initY, int slopeX, int slopeY, int& treesHit, int& openSquares)
+{
+	if (initY >= l.size())
+		return;
+
+	if (initX >= l[initY].length())
+		initX -= l[initY].length();
+
+	if (initX < 0)
+		initX += l[initY].length();
+
+	//[0] = ".........#.#.#.........#.#....."
+	//cout << "x=" << initX << ", y=" << initY << ", current square = " << l.at(initY).at(initX) << endl;
+
+	if (l.at(initY).at(initX) == '#')
+		treesHit++;
+	else
+		openSquares++;
+
+	initX += slopeX;
+	initY += slopeY;
+
+	SlideHill(l, initX, initY, slopeX, slopeY, treesHit, openSquares);
+}
