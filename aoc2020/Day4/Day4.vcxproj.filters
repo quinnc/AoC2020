@@ -22,6 +22,7 @@
   <ItemGroup>
     <Text Include="sample.txt" />
     <Text Include="input.txt" />
+    <Text Include="sample2.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
