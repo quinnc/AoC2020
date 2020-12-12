@@ -11,6 +11,8 @@
 using namespace std;
 
 int HighestId(vector<string>& lines);
+int MissingId(vector<string>& lines);
+
 
 int main(int argc, char** argv)
 {
@@ -27,7 +29,8 @@ int main(int argc, char** argv)
 		return -1;
 	}
 
-	cout << "Highest seat id = " << HighestId(lines) << endl;
+	//cout << "Highest seat id = " << HighestId(lines) << endl;
+	MissingId(lines);
 }
 
 int GetRow(string rowpartitions)
@@ -76,7 +79,6 @@ int GetColumn(string colPartitions)
 	}
 
 	//cout << " Min=" << currMin << "; Max=" << currMax << "; middle=" << middle << endl;
-
 	return middle;
 }
 
@@ -105,4 +107,35 @@ int HighestId(vector<string>& lines)
 }
 
 
+// part b
+int MissingId(vector<string>& lines)
+{
+#define totRow 128
+#define totCol 8
+	bool occupied[totRow][totCol];
+	int id = 0;
+
+	for (size_t i = 0; i < lines.size(); i++)
+	{
+		//cout << "Current line == " << lines[i] << endl;
+		int row = GetRow(lines[i].substr(0, 7));
+		int col = GetColumn(lines[i].substr(7, 3));
+		
+		occupied[row][col] = true;
+	}
+
+	// find empty
+	for (int row2 = 0; row2 < totRow; row2++)
+		for (int col2 = 1; col2 < totCol; col2++)
+		{
+			if (!occupied[row2][col2])
+				if (occupied[row2][col2 - 1] && occupied[row2][col2 + 1])
+				{
+					id = SeatId(row2, col2);
+					cout << "Found empty seat at row=" << row2 << ", col=" << col2 << ", id=" << id << endl;
+				}
+		}
+
+	return id;
+}
 
