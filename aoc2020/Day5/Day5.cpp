@@ -32,7 +32,7 @@ int main(int argc, char** argv)
 
 int GetRow(string rowpartitions)
 {
-	cout << " Interpretting row: " << rowpartitions << endl;
+	//cout << " Interpretting row: " << rowpartitions << endl;
 	int currMin = 0;
 	int currMax = 127;
 	int middle = currMax / 2;
@@ -45,11 +45,11 @@ int GetRow(string rowpartitions)
 			currMin = middle + 1;
 
 		middle = (currMin + currMax) / 2;
-		cout << "i=" << i << "; char=" << rowpartitions[i] << "; Min=" << currMin << "; Max=" << currMax << "; middle=" << middle << endl;
+		//cout << "i=" << i << "; char=" << rowpartitions[i] << "; Min=" << currMin << "; Max=" << currMax << "; middle=" << middle << endl;
 
 	}
 
-	cout << " Min=" << currMin << "; Max=" << currMax << "; middle=" << middle << endl;
+	//cout << " Min=" << currMin << "; Max=" << currMax << "; middle=" << middle << endl;
 
 	return middle;
 }
@@ -57,7 +57,7 @@ int GetRow(string rowpartitions)
 
 int GetColumn(string colPartitions)
 {
-	cout << " Interpretting columns: " << colPartitions << endl;
+	//cout << " Interpretting columns: " << colPartitions << endl;
 
 	int currMin = 0;
 	int currMax = 7;
@@ -71,11 +71,11 @@ int GetColumn(string colPartitions)
 			currMin = middle + 1;
 
 		middle = (currMin + currMax) / 2;
-		cout << "i=" << i << "; char=" << colPartitions[i] << "; Min=" << currMin << "; Max=" << currMax << "; middle=" << middle << endl;
+		//cout << "i=" << i << "; char=" << colPartitions[i] << "; Min=" << currMin << "; Max=" << currMax << "; middle=" << middle << endl;
 
 	}
 
-	cout << " Min=" << currMin << "; Max=" << currMax << "; middle=" << middle << endl;
+	//cout << " Min=" << currMin << "; Max=" << currMax << "; middle=" << middle << endl;
 
 	return middle;
 }
@@ -92,15 +92,17 @@ int HighestId(vector<string>& lines)
 
 	for (size_t i = 0; i < lines.size(); i++)
 	{
-		cout << "Current line == " << lines[i] << endl;
+		//cout << "Current line == " << lines[i] << endl;
 		int row = GetRow(lines[i].substr(0, 7));
 		int col = GetColumn(lines[i].substr(7, 3));
 		int id = SeatId(row, col);
 
-		cout << "  Row =" << row << ", col=" << col << ", id =" << id << endl;
+		//cout << "  Row =" << row << ", col=" << col << ", id =" << id << endl;
 		if (id > currentHigh)
 			currentHigh = id;
 	}
 	return currentHigh;
 }
+
+
 
