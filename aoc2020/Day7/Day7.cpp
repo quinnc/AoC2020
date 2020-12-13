@@ -2,19 +2,137 @@
 //
 
 #include <iostream>
+#include <vector>
+#include <string>
+#include <fstream>
+#include <map>
 
-int main()
+#include "FileLoad.h"
+
+using namespace std;
+
+int PartA(vector<string>& lines);
+int PartB(vector<string>& lines);
+
+int main(int argc, char** argv)
 {
-    std::cout << "Hello World!\n";
+	std::cout << "Hello World!\n";
+
+	ShowInputs(argc, argv);
+
+	if (argc < 2)
+		return -2;
+
+	vector<string> lines;
+	if (!OpenAndReadInput(argv[1], lines))
+	{
+		return -1;
+	}
+
+
+	cout << "PART A::: number of suitcase that can contain shiny gold = " << PartA(lines) << endl;
+	//cout << "PART B::: Sum of counts = " << PartB(lines) << endl;
+
+	return 0;
+
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+class Bag
+{
+public:
+	map<string, int> contents;
+	string name = "";
+	bool containsShinyGold = false;
+
+	Bag() { }
+
+};
+
+typedef map<string, Bag> Rules;
+
+int ParseLine(const string & line, Rules& rules)
+{
+	int firstBags = line.find(" bags", 0);
+	string name = line.substr(0, firstBags);
+
+	cout << " Bag name == " << name << endl;
+
+
+	int containStart = line.find("contain ", firstBags);
+	string recipeStr = line.substr(containStart + 8);
+
+	Bag emptyBag;
+	emptyBag.name = name;
+	emptyBag.containsShinyGold = false;
+
+	int noBagsStart = recipeStr.find("no other bags");
+	if (noBagsStart != string::npos)
+	{
+		int nextBag = recipeStr.find("bags");
+		while (nextBag != string::npos)
+		{
+			// 1 digit
+			int num = atoi(recipeStr.substr(0, 1).c_str());
+
+			string partname = recipeStr.substr(2, nextBag - 2);
+
+			cout << "  Container::: " << name << " contains " << num << " bags of colour " << partname << endl;
+
+			emptyBag.contents[partname] = num;
+			if (partname == "shiny gold")
+				emptyBag.containsShinyGold = true;
+
+			// move tot he next containee
+			recipeStr = recipeStr.substr(nextBag + 5);
+			nextBag = recipeStr.find("bags");
+			cout << "Next part = " << recipeStr << ", next bag @ " << nextBag << endl;
+		}
+
+	}
+
+	rules[name] = emptyBag;
+
+	return 0;
+}
+
+
+int ParseFile(vector<string>& lines, Rules& rules)
+{
+
+	for (size_t i = 0; i < lines.size(); i++)
+		ParseLine(lines[i], rules);
+
+	return 0;
+}
+
+bool CanContain(const  Bag& container, Rules& rules, const string& bagName)
+{
+	if (container.containsShinyGold)
+		return true;
+	for (auto& containee : container.contents)
+	{
+		if (CanContain(rules[containee.first], rules, bagName))
+			return true;
+	}
+
+	return false;
+}
+
+int PartA(vector<string>& lines)
+{
+	Rules bagRules;
+
+	ParseFile(lines, bagRules);
+
+	int numContainShinyGold = 0;
+
+	for (auto &rule : bagRules)
+	{
+		if (CanContain(rule.second, bagRules, "shiny gold"))
+			numContainShinyGold++;
+	}
+
+	return numContainShinyGold;
+
+}
