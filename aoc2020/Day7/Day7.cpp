@@ -56,37 +56,46 @@ int ParseLine(const string & line, Rules& rules)
 	int firstBags = line.find(" bags", 0);
 	string name = line.substr(0, firstBags);
 
-	cout << " Bag name == " << name << endl;
+	//cout << " Bag name == " << name << endl;
 
 
 	int containStart = line.find("contain ", firstBags);
 	string recipeStr = line.substr(containStart + 8);
 
+	//cout << "contents start == " << containStart << " recipe string ==" << recipeStr << "==" <<endl;
 	Bag emptyBag;
 	emptyBag.name = name;
 	emptyBag.containsShinyGold = false;
 
 	int noBagsStart = recipeStr.find("no other bags");
-	if (noBagsStart != string::npos)
+	//cout << " No other bags? " << noBagsStart << endl;
+	if (noBagsStart == string::npos)
 	{
-		int nextBag = recipeStr.find("bags");
+		int nextBag = recipeStr.find("bag");
+		//cout << "Next part ==" << recipeStr << "==, next bag @ " << nextBag << endl;
 		while (nextBag != string::npos)
 		{
+			int nextDigit = recipeStr.find_first_of("0123456789");
+			recipeStr = recipeStr.substr(nextDigit);
+			// now that shortened the recipe, update the nextbag
+			nextBag = recipeStr.find("bag");
+
+			//cout << "after skipping ahead to the next digit >>" << recipeStr << "<<" << endl;
 			// 1 digit
 			int num = atoi(recipeStr.substr(0, 1).c_str());
 
-			string partname = recipeStr.substr(2, nextBag - 2);
+			string partname = recipeStr.substr(2, nextBag - 3);
 
-			cout << "  Container::: " << name << " contains " << num << " bags of colour " << partname << endl;
+			//cout << "  Container " << name << " contains --" << num << "-- bags of colour --" << partname <<"--" << endl;
 
 			emptyBag.contents[partname] = num;
 			if (partname == "shiny gold")
 				emptyBag.containsShinyGold = true;
 
 			// move tot he next containee
-			recipeStr = recipeStr.substr(nextBag + 5);
-			nextBag = recipeStr.find("bags");
-			cout << "Next part = " << recipeStr << ", next bag @ " << nextBag << endl;
+			recipeStr = recipeStr.substr(nextBag + 3);
+			nextBag = recipeStr.find("bag");
+			//cout << "Next part = " << recipeStr << ", next bag @ " << nextBag << endl;
 		}
 
 	}
