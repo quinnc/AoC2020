@@ -31,7 +31,7 @@ int main(int argc, char** argv)
 
 
 	cout << "PART A::: number of suitcase that can contain shiny gold = " << PartA(lines) << endl;
-	//cout << "PART B::: Sum of counts = " << PartB(lines) << endl;
+	cout << "PART B::: bags in shiny gold = " << PartB(lines) << endl;
 
 	return 0;
 
@@ -144,4 +144,33 @@ int PartA(vector<string>& lines)
 
 	return numContainShinyGold;
 
+}
+
+
+int CountSubbags(const string& currName, Rules& rules)
+{
+	auto recipe = rules[currName];
+	int bagsWithin = 1;
+
+	//cout << " counting bags within :" << currName << ":" << endl;
+
+	for (auto& part : recipe.contents)
+	{
+		int subbags = CountSubbags(part.first, rules);
+		//cout << "    Content: " << part.second << " bags of " << part.first << ", which has " << subbags << " bags within it" << endl;
+		bagsWithin += part.second * subbags;
+	}
+
+	return bagsWithin;
+}
+
+
+int PartB(vector<string>& lines)
+{
+
+	Rules bagRules;
+
+	ParseFile(lines, bagRules);
+
+	return CountSubbags("shiny gold", bagRules) - 1;
 }
