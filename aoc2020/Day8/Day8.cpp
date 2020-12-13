@@ -63,7 +63,7 @@ int PartA(vector<string>& lines)
 		visitedLines.insert(make_pair(currLine, currLine));
 		instr = lines[currLine].substr(0, 3);
 
-		cout << "Current line: " << lines[currLine] << ", instruction= >>" << instr << "<<" << ", accumulator=" << accum << ", line num=" << currLine << endl;
+		//cout << "Current line: " << lines[currLine] << ", instruction= >>" << instr << "<<" << ", accumulator=" << accum << ", line num=" << currLine << endl;
 
 		if (instr == OpCodeStrs[(int)OpCodes::nop])
 		{
