@@ -19,12 +19,15 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Day6", "Day6\Day6.vcxproj",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Day7", "Day7\Day7.vcxproj", "{F38D5CB2-201A-4BE5-A730-4EFB4384A144}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Day8", "Day8\Day8.vcxproj", "{DAA58870-5014-48D3-96AB-043F4B0A7CFB}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		SharedCode\SharedCode.vcxitems*{0fbd7f32-5dc8-4550-861c-b193be292ec7}*SharedItemsImports = 4
 		SharedCode\SharedCode.vcxitems*{127bc95f-e8db-45f0-97a6-7e786c30e6dc}*SharedItemsImports = 9
 		SharedCode\SharedCode.vcxitems*{3e3c685a-5785-4813-8c01-d0caafcf6994}*SharedItemsImports = 4
 		SharedCode\SharedCode.vcxitems*{6d432dd4-b4db-4311-8841-22d25c6c12c1}*SharedItemsImports = 4
+		SharedCode\SharedCode.vcxitems*{daa58870-5014-48d3-96ab-043f4b0a7cfb}*SharedItemsImports = 4
 		SharedCode\SharedCode.vcxitems*{f38d5cb2-201a-4be5-a730-4efb4384a144}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -90,6 +93,14 @@ Global
 		{F38D5CB2-201A-4BE5-A730-4EFB4384A144}.Release|x64.Build.0 = Release|x64
 		{F38D5CB2-201A-4BE5-A730-4EFB4384A144}.Release|x86.ActiveCfg = Release|Win32
 		{F38D5CB2-201A-4BE5-A730-4EFB4384A144}.Release|x86.Build.0 = Release|Win32
+		{DAA58870-5014-48D3-96AB-043F4B0A7CFB}.Debug|x64.ActiveCfg = Debug|x64
+		{DAA58870-5014-48D3-96AB-043F4B0A7CFB}.Debug|x64.Build.0 = Debug|x64
+		{DAA58870-5014-48D3-96AB-043F4B0A7CFB}.Debug|x86.ActiveCfg = Debug|Win32
+		{DAA58870-5014-48D3-96AB-043F4B0A7CFB}.Debug|x86.Build.0 = Debug|Win32
+		{DAA58870-5014-48D3-96AB-043F4B0A7CFB}.Release|x64.ActiveCfg = Release|x64
+		{DAA58870-5014-48D3-96AB-043F4B0A7CFB}.Release|x64.Build.0 = Release|x64
+		{DAA58870-5014-48D3-96AB-043F4B0A7CFB}.Release|x86.ActiveCfg = Release|Win32
+		{DAA58870-5014-48D3-96AB-043F4B0A7CFB}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
