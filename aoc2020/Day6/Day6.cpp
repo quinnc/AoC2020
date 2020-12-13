@@ -38,9 +38,15 @@ int main(int argc, char** argv)
 
 void FindYeses(string line, bool yeses[NUMQ])
 {
+	int index=-1;
 	for (size_t c = 0; c < line.length(); c++)
 	{
-		yeses[c - 'a'] = true;
+		index = line[c] - 'a';
+		//cout << "found " << line[c] << " setting index =" << index << endl;
+		if (index >= 0 && index < NUMQ)
+			yeses[index] = true;
+		else
+			cout << " index is invalid!!!! " << endl;
 	}
 }
 
@@ -90,6 +96,9 @@ int PartA(vector<string>& lines)
 		// else
 		FindYeses(lines[line], yeses);
 	}
+
+	// in case there wasn't a blank line at the end of the file
+	totalCounts += NumYeses(yeses);
 
 	return totalCounts;
 }
