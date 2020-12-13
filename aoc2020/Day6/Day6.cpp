@@ -11,6 +11,7 @@
 using namespace std;
 
 int PartA(vector<string>& lines);
+int PartB(vector<string>& lines);
 
 int main(int argc, char** argv)
 {
@@ -28,7 +29,8 @@ int main(int argc, char** argv)
 	}
 
 
-	cout << " Sum of counts = " << PartA(lines) << endl;
+	cout << "PART A::: Sum of counts = " << PartA(lines) << endl;
+	cout << "PART B::: Sum of counts = " << PartB(lines) << endl;
 
 	return 0;
 
@@ -60,11 +62,11 @@ int NumYeses(bool yeses[NUMQ])
 	return yescnt;
 }
 
-void ResetYeses(bool yeses[NUMQ])
+void ResetYeses(bool yeses[NUMQ], bool setting)
 {
 	for (size_t y = 0; y < NUMQ; y++)
 	{
-		yeses[y] = false;
+		yeses[y] = setting;
 	}
 }
 
@@ -88,13 +90,54 @@ int PartA(vector<string>& lines)
 		if (lines[line] == "")
 		{
 			totalCounts += NumYeses(yeses);
-			ResetYeses(yeses);
+			ResetYeses(yeses, false);
 			MatchAny(yeses, true);
 			continue;
 		}
 
 		// else
 		FindYeses(lines[line], yeses);
+	}
+
+	// in case there wasn't a blank line at the end of the file
+	totalCounts += NumYeses(yeses);
+
+	return totalCounts;
+}
+
+void FindAllYeses(string& line, bool yeses[])
+{
+	bool foundYeses[NUMQ] = { false };
+
+	FindYeses(line, foundYeses);
+
+	for (size_t i = 0; i < NUMQ; i++)
+	{
+		yeses[i] &= foundYeses[i];
+	}
+}
+
+
+int PartB(vector<string>& lines)
+{
+
+	bool yeses[NUMQ] = { true };
+	ResetYeses(yeses, true);
+	MatchAny(yeses, false);
+	int totalCounts = 0;
+
+	for (size_t line = 0; line < lines.size(); line++)
+	{
+		if (lines[line] == "")
+		{
+			totalCounts += NumYeses(yeses);
+			ResetYeses(yeses, true);
+			MatchAny(yeses, false);
+			continue;
+		}
+
+		// else
+		FindAllYeses(lines[line], yeses);
 	}
 
 	// in case there wasn't a blank line at the end of the file
