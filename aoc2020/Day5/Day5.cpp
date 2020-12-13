@@ -112,30 +112,42 @@ int MissingId(vector<string>& lines)
 {
 #define totRow 128
 #define totCol 8
-	bool occupied[totRow][totCol];
-	int id = 0;
 
+#define totIds 879
+
+	bool foundId[totIds] = { false };
+	int emptyId = 0;
+	
 	for (size_t i = 0; i < lines.size(); i++)
 	{
 		//cout << "Current line == " << lines[i] << endl;
 		int row = GetRow(lines[i].substr(0, 7));
 		int col = GetColumn(lines[i].substr(7, 3));
-		
-		occupied[row][col] = true;
+		int id = SeatId(row, col);
+
+		if (id >= totIds)
+		{
+			cout << " Invalid id=" << id << endl;
+			continue;
+		}
+
+		foundId[id] = true;
 	}
 
 	// find empty
-	for (int row2 = 0; row2 < totRow; row2++)
-		for (int col2 = 1; col2 < totCol; col2++)
+	for (int currId = 1; currId < (totIds - 1); currId++)
+	{
+		if (!foundId[currId])
 		{
-			if (!occupied[row2][col2])
-				if (occupied[row2][col2 - 1] && occupied[row2][col2 + 1])
-				{
-					id = SeatId(row2, col2);
-					cout << "Found empty seat at row=" << row2 << ", col=" << col2 << ", id=" << id << endl;
-				}
+			cout << "Id " << currId << " is empty, but are neighbours full?" << endl;
+			if (foundId[currId - 1] && foundId[currId + 1])
+			{
+				cout << " Neighbours are full! my seat id = " << currId << endl;
+				emptyId = currId;
+			}
 		}
+	}
 
-	return id;
+	return emptyId;
 }
 
