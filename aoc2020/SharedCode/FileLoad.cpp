@@ -14,7 +14,7 @@ bool OpenAndReadInput(char* filename, vector<string>& lines)
 {
 	fstream inputfile;
 	string line;
-
+	int lineCount = 0;
 	inputfile.open(filename, ios::in);
 
 	if (!inputfile.is_open())
@@ -27,6 +27,7 @@ bool OpenAndReadInput(char* filename, vector<string>& lines)
 	{
 		//int cost = std::stoi(line);
 		lines.push_back(line);
+		lineCount++;
 	}
 
 	inputfile.close();
