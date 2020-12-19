@@ -46,7 +46,11 @@ void PrepAdapters(const vector<string>& lines, vector<int>& adapterJolts)
 	}
 
 	std::sort(adapterJolts.begin(), adapterJolts.end());
-}
+
+	for (auto j : adapterJolts)
+		cout << " " << j;
+	cout << endl;
+ }
 
 
 int PartA(vector<string>& lines)
@@ -83,45 +87,169 @@ void PDepth(int depth)
 {
 	for (int d = 0; d < depth; d++)
 		cout << "\t";
-
 }
+
+
+unsigned long long  int FindPathsDepth2Plus(const vector<int>& adapterJolts, int startIndex, int startJolt, int targetJolt)
+{
+	unsigned long long int pathsHere = 0;
+
+	//cout << " FindPathsDepth2Plus() start index = " << startIndex << ", Jolts start=" << startJolt << ", target=" << targetJolt << endl;
+
+
+	size_t i = startIndex;
+	while (i < adapterJolts.size() && ((adapterJolts[i] - startJolt) <= 3))
+	{
+		if (adapterJolts[i] != targetJolt)
+		{
+			i++;
+			pathsHere += FindPathsDepth2Plus (adapterJolts, i, adapterJolts[i - 1], targetJolt);
+		}
+		else
+		{
+			return pathsHere + 1;
+		}
+	}
+
+	return pathsHere;
+}
+
+
+#include <thread>
+#include <future>
+
+unsigned long long  int FindPathsDepth1 (const vector<int>& adapterJolts, int startIndex, int startJolt, int targetJolt)
+{
+	unsigned long long int pathsHere = 0;
+
+	size_t i = startIndex;
+	
+	future <unsigned long long int>  f1, f2;
+	bool doF1 = false;
+	bool doF2 = false;
+
+
+	cout << " FindPathsDepth1() start index = " << startIndex << ", Jolts start=" << startJolt << ", target=" << targetJolt << endl;
+
+
+
+	// up to 3 steps more
+	size_t currIndex = startIndex + 2;
+	if (currIndex < adapterJolts.size())
+	{
+		if (adapterJolts[currIndex] == targetJolt)
+			pathsHere++;
+		else if ((adapterJolts[currIndex] - startJolt) <= 3)
+		{
+			doF2 = true;
+			f2 = std::async(FindPathsDepth2Plus, adapterJolts, currIndex + 1, adapterJolts[currIndex], targetJolt);
+		}
+
+	}
+
+	currIndex = startIndex + 1;
+	if (currIndex < adapterJolts.size())
+	{
+		if (adapterJolts[currIndex] == targetJolt)
+			pathsHere++;
+		else if ((adapterJolts[currIndex] - startJolt) <= 3)
+		{
+			f1 = std::async(FindPathsDepth2Plus, adapterJolts, currIndex + 1, adapterJolts[currIndex], targetJolt);
+			doF1 = true;
+		}
+
+	}
+
+
+	currIndex = startIndex;
+	if (currIndex < adapterJolts.size())
+	{
+		if (adapterJolts[currIndex] == targetJolt)
+			pathsHere++;
+		else if ((adapterJolts[currIndex] - startJolt) <= 3)
+			pathsHere += FindPathsDepth2Plus(adapterJolts, currIndex+1, adapterJolts[currIndex], targetJolt);
+		cout << " FindPathsDepth1() Paths here after self loop == " << pathsHere << endl;
+
+	}
+
+	if (doF2) {
+		pathsHere += f2.get();
+		cout << " FindPathsDepth1() Paths here after f2 == " << pathsHere << endl;
+	}
+	if (doF1)
+	{
+		pathsHere += f1.get();
+		cout << " FindPathsDepth1() Paths here after f1 == " << pathsHere << endl;
+	}
+
+	return pathsHere;
+}
+
 
 // returns the number of paths found
 unsigned long long  int FindPaths(const vector<int>& adapterJolts, int startIndex, int startJolt, int targetJolt)
 {
 	unsigned long long int pathsHere = 0;
 
-	static int depth = 1;
-	
-	
-	//PDepth(depth);
-	//cout << " i=" << startIndex << " start J=" << startJolt << endl;
 
 	size_t i = startIndex;
-	while (i < adapterJolts.size() && ((adapterJolts[i] - startJolt) <= 3))
+
+	future <unsigned long long int>  f1, f2;
+	bool doF1 = false, doF2 = false;
+
+
+	cout << " FindPaths() start index = " << startIndex << ", Jolts start=" << startJolt << ", target=" << targetJolt << endl;
+
+	// up to 3 steps more
+	size_t currIndex = startIndex + 2;
+	if (currIndex < adapterJolts.size())
 	{
-		//PDepth(depth);
-		//cout << " current i=" << i << " J=" << adapterJolts[i] << endl;
-
-		if (adapterJolts[i] != targetJolt)
+		if (adapterJolts[currIndex] == targetJolt)
+			pathsHere++;
+		else if ((adapterJolts[currIndex] - startJolt) <= 3)
 		{
-			depth++;
-			i++;
-			pathsHere += FindPaths(adapterJolts, i, adapterJolts[i-1], targetJolt);
-			depth--;
+			doF2 = true;
+			f2 = std::async(FindPathsDepth1, adapterJolts, currIndex + 1, adapterJolts[currIndex], targetJolt);
 		}
-		else
-		{
-			//PDepth(depth);
-			//cout << " RETURNING 1 current i=" << i << " J=" << adapterJolts[i] << endl;
-			return pathsHere + 1;
-		}
-
 
 	}
 
-	//PDepth(depth);
-	//cout << " returning 0, current i=" << i << ", path here=" << pathsHere <<  endl;
+	currIndex = startIndex + 1;
+	if (currIndex < adapterJolts.size())
+	{
+		if (adapterJolts[currIndex] == targetJolt)
+			pathsHere++;
+		else if ((adapterJolts[currIndex] - startJolt) <= 3)
+		{
+			doF1 = true;
+			f1 = std::async(FindPathsDepth1, adapterJolts, currIndex + 1, adapterJolts[currIndex], targetJolt);
+		}
+
+	}
+
+
+	currIndex = startIndex;
+	if (currIndex < adapterJolts.size())
+	{
+		if (adapterJolts[currIndex] == targetJolt)
+			pathsHere++;
+		else if ((adapterJolts[currIndex] - startJolt) <= 3)
+			pathsHere += FindPathsDepth1(adapterJolts, currIndex+1, adapterJolts[currIndex], targetJolt);
+
+		cout << " FindPaths() Paths here after self loop == " << pathsHere << endl;
+	}
+
+	if (doF2)
+	{
+		pathsHere += f2.get();
+		cout << " FindPaths() Paths here after f2 == " << pathsHere << endl;
+	}
+
+	if (doF1)
+	{
+		pathsHere += f1.get();
+		cout << " FindPaths() Paths here after f1 == " << pathsHere << endl;
+	}
 	return pathsHere;
 }
 
