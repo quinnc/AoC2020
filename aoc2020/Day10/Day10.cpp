@@ -63,7 +63,7 @@ int PartA(vector<string>& lines)
 	for (size_t j = 0; j < adapterJolts.size(); j++)
 	{
 		int deltaJolt = adapterJolts[j] - prevJolt;
-		cout << "Diff is: " << deltaJolt << endl;
+		//cout << "Diff is: " << deltaJolt << endl;
 
 		if (deltaJolt < 1 || deltaJolt > 4)
 		{
@@ -106,15 +106,15 @@ unsigned long long  int FindPaths(const vector<int>& adapterJolts, int startInde
 		if (adapterJolts[i] != targetJolt)
 		{
 			depth++;
-			pathsHere += FindPaths(adapterJolts, i + 1, adapterJolts[i], targetJolt);
 			i++;
+			pathsHere += FindPaths(adapterJolts, i, adapterJolts[i-1], targetJolt);
 			depth--;
 		}
 		else
 		{
 			//PDepth(depth);
 			//cout << " RETURNING 1 current i=" << i << " J=" << adapterJolts[i] << endl;
-			return 1;
+			return pathsHere + 1;
 		}
 
 
