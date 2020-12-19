@@ -12,14 +12,19 @@
 
 using namespace std;
 
+
+int PartA(vector<string>& lines);
+int PartB(vector<string>& lines);
+
+
 int main(int argc, char** argv)
 {
-    std::cout << "Hello World!\n";
+	std::cout << "Hello World!\n";
 
 
 	ShowInputs(argc, argv);
 
-	if (argc != 3)
+	if (argc != 2)
 		return -2;
 
 	vector<string> lines;
@@ -27,27 +32,47 @@ int main(int argc, char** argv)
 	{
 		return -1;
 	}
+
+	cout << " Number of 1 jolts steps * Number of 3 jolt steps = " << PartA(lines) << endl;
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
-
-int PartA()
+int PartA(vector<string>& lines)
 {
-	list<int> adapterJolts;
+	vector<int> adapterJolts;
+	int result = -1;
 
-	for (size_t i = 0; i < (size_t)preamble; i++)
+	for (size_t i = 0; i < lines.size(); i++)
 	{
-		adders.push_back(stoi(lines[i]));
+		adapterJolts.push_back(stoi(lines[i]));
 	}
 
 	std::sort(adapterJolts.begin(), adapterJolts.end());
+
+	// one 3 Jolt step for the last adapter to device jump //
+	int joltDiffs[5] = { 0,0,0,1,0 };
+	int prevJolt = 0;
+
+	for (size_t j = 0; j < adapterJolts.size(); j++)
+	{
+		int deltaJolt = adapterJolts[j] - prevJolt;
+		cout << "Diff is: " << deltaJolt << endl;
+
+		if (deltaJolt < 0 || deltaJolt > 4)
+		{
+			cout << "^^^ INVALID JOLT ****************************" << endl;
+			continue;
+		}
+		joltDiffs[deltaJolt]++;
+		prevJolt = adapterJolts[j];
+	}
+
+	result = joltDiffs[1] * joltDiffs[3];
+
+	return result;
+}
+
+
+int PartB(vector<string>& lines)
+{
+	return -1;
 }
