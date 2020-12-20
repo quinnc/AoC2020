@@ -426,55 +426,62 @@ bool SeatTransformPartB(const vector<string>& before, vector<string>& after)
 			{
 				bool foundOccupied = false;
 				int seatX, seatY;
+
+				seatX = seatY = -1;
 				if (FindFirstSeatUp(before, x, y, seatX, seatY))
 				{
-					if (before[y].at(x) == '#')
+					if (before[seatY].at(seatX) == '#')
 						foundOccupied = true;
 				}
 
+				seatX = seatY = -1; 
 				if (FindFirstSeatDown(before, x, y, seatX, seatY))
 				{
-					if (before[y].at(x) == '#')
+					if (before[seatY].at(seatX) == '#')
 						foundOccupied = true;
 				}
 		
-
+				seatX = seatY = -1;
 				if (FindFirstSeatLeft(before, x, y, seatX, seatY))
 				{
-					if (before[y].at(x) == '#')
+					if (before[seatY].at(seatX) == '#')
 						foundOccupied = true;
 				}
 
+				seatX = seatY = -1;
 				if (FindFirstSeatRight(before, x, y, seatX, seatY))
 				{
-					if (before[y].at(x) == '#')
+					if (before[seatY].at(seatX) == '#')
 						foundOccupied = true;
 				}
 
 
 
+				seatX = seatY = -1; 
 				if (FindFirstSeatUR(before, x, y, seatX, seatY))
 				{
-					if (before[y].at(x) == '#')
+					if (before[seatY].at(seatX) == '#')
 						foundOccupied = true;
 				}
 
+				seatX = seatY = -1; 
 				if (FindFirstSeatDR(before, x, y, seatX, seatY))
 				{
-					if (before[y].at(x) == '#')
+					if (before[seatY].at(seatX) == '#')
 						foundOccupied = true;
 				}
 
-
+				seatX = seatY = -1;
 				if (FindFirstSeatDL(before, x, y, seatX, seatY))
 				{
-					if (before[y].at(x) == '#')
+					if (before[seatY].at(seatX)) == '#')
 						foundOccupied = true;
 				}
 
+				seatX = seatY = -1;
 				if (FindFirstSeatUL(before, x, y, seatX, seatY))
 				{
-					if (before[y].at(x) == '#')
+					if (before[seatY].at(seatX) == '#')
 						foundOccupied = true;
 				}
 
@@ -494,55 +501,61 @@ bool SeatTransformPartB(const vector<string>& before, vector<string>& after)
 				int occupiedCount = 0;
 
 				int seatX, seatY;
+
+				seatX = seatY = -1;
 				if (FindFirstSeatUp(before, x, y, seatX, seatY))
 				{
-					if (before[y].at(x) == '#')
+					if (before[seatY].at(seatX) == '#')
 						occupiedCount++;
 				}
 
+				seatX = seatY = -1;
 				if (FindFirstSeatDown(before, x, y, seatX, seatY))
 				{
-					if (before[y].at(x) == '#')
+					if (before[seatY].at(seatX) == '#')
 						occupiedCount++;
 				}
 
-
+				seatX = seatY = -1;
 				if (FindFirstSeatLeft(before, x, y, seatX, seatY))
 				{
-					if (before[y].at(x) == '#')
+					if (before[seatY].at(seatX) == '#')
 						occupiedCount++;
 				}
 
+				seatX = seatY = -1;
 				if (FindFirstSeatRight(before, x, y, seatX, seatY))
 				{
-					if (before[y].at(x) == '#')
+					if (before[seatY].at(seatX) == '#')
 						occupiedCount++;
 				}
 
 
-
+				seatX = seatY = -1;
 				if (FindFirstSeatUR(before, x, y, seatX, seatY))
 				{
-					if (before[y].at(x) == '#')
+					if (before[seatY].at(seatX) == '#')
 						occupiedCount++;
 				}
 
+				seatX = seatY = -1;
 				if (FindFirstSeatDR(before, x, y, seatX, seatY))
 				{
-					if (before[y].at(x) == '#')
+					if (before[seatY].at(seatX) == '#')
 						occupiedCount++;
 				}
 
-
+				seatX = seatY = -1;
 				if (FindFirstSeatDL(before, x, y, seatX, seatY))
 				{
-					if (before[y].at(x) == '#')
+					if (before[seatY].at(seatX) == '#')
 						occupiedCount++;
 				}
 
+				seatX = seatY = -1;
 				if (FindFirstSeatUL(before, x, y, seatX, seatY))
 				{
-					if (before[y].at(x) == '#')
+					if (before[seatY].at(seatX) == '#')
 						occupiedCount++;
 				}
 
