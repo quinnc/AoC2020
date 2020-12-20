@@ -81,7 +81,7 @@ bool SeatTransform(const vector<string>& before, vector<string>& after)
 						if (currX >= (int)xMax)
 							continue;
 
-						if (currX == 0 && currY == 0) // self
+						if (xLook == 0 && yLook == 0) // self
 							continue;
 
 
@@ -228,9 +228,369 @@ int PartA(vector<string>& lines)
 
 }
 
+bool FindFirstSeatUp(const vector<string>& seats, int xStart, int yStart, int& seatX, int& seatY)
+{
+	bool foundSeat = false;
+	for (int yLook = yStart - 1; yLook >= 0; yLook--)
+	{
+		if (seats[yLook].at(xStart) != '.')
+		{
+			foundSeat = true;
+			seatX = xStart;
+			seatY = yLook;
+		}
+	}
 
+
+	return foundSeat;
+}
+
+bool FindFirstSeatDown(const vector<string>& seats, int xStart, int yStart, int& seatX, int& seatY)
+{
+	bool foundSeat = false;
+	for (int yLook = yStart + 1; yLook < (int)seats.size(); yLook++)
+	{
+		if (seats[yLook].at(xStart) != '.')
+		{
+			foundSeat = true;
+			seatX = xStart;
+			seatY = yLook;
+		}
+	}
+
+
+	return foundSeat;
+}
+
+
+bool FindFirstSeatLeft(const vector<string>& seats, int xStart, int yStart, int& seatX, int& seatY)
+{
+	bool foundSeat = false;
+	for (int xLook = xStart - 1; xLook >= 0; xLook--)
+	{
+		if (seats[yStart].at(xLook) != '.')
+		{
+			foundSeat = true;
+			seatX = xLook;
+			seatY = yStart;
+		}
+	}
+
+
+	return foundSeat;
+}
+
+
+bool FindFirstSeatRight(const vector<string>& seats, int xStart, int yStart, int& seatX, int& seatY)
+{
+	bool foundSeat = false;
+
+	for (int xLook = xStart + 1; xLook < (int)seats[0].length(); xLook++)
+	{
+		if (seats[yStart].at(xLook) != '.')
+		{
+			foundSeat = true;
+			seatX = xLook;
+			seatY = yStart;
+		}
+	}
+	return foundSeat;
+}
+
+
+// Up and right diagonal
+bool FindFirstSeatUR(const vector<string>& seats, int xStart, int yStart, int& seatX, int& seatY)
+{
+	bool foundSeat = false;
+	int xMaxDelta = seats[0].length() - xStart;
+	int yMaxDelta = yStart;
+	int maxDelta = max(xMaxDelta, yMaxDelta);
+
+	for (int delta = 1; delta < maxDelta; delta++)
+	{
+		int xdelta = xStart + delta;
+		int ydelta = yStart - delta;
+
+		if (seats[ydelta].at(xdelta) != '.')
+		{
+			foundSeat = true;
+			seatX = xdelta;
+			seatY = ydelta;
+		}
+	}
+
+	return foundSeat;
+}
+
+
+// down and right diagonal
+bool FindFirstSeatDR(const vector<string>& seats, int xStart, int yStart, int& seatX, int& seatY)
+{
+	bool foundSeat = false;
+	int xMaxDelta = seats[0].length() - xStart;
+	int yMaxDelta = seats.size() - yStart;
+	int maxDelta = max(xMaxDelta, yMaxDelta);
+
+	for (int delta = 1; delta < maxDelta; delta++)
+	{
+		int xdelta = xStart + delta;
+		int ydelta = yStart + delta;
+
+		if (seats[ydelta].at(xdelta) != '.')
+		{
+			foundSeat = true;
+			seatX = xdelta;
+			seatY = ydelta;
+		}
+	}
+
+	return foundSeat;
+}
+
+// Up and left diagonal
+bool FindFirstSeatUL(const vector<string>& seats, int xStart, int yStart, int& seatX, int& seatY)
+{
+	bool foundSeat = false;
+	int xMaxDelta = xStart;
+	int yMaxDelta = yStart;
+	int maxDelta = max(xMaxDelta, yMaxDelta);
+
+	for (int delta = 1; delta < maxDelta; delta++)
+	{
+		int xdelta = xStart - delta;
+		int ydelta = yStart - delta;
+
+		if (seats[ydelta].at(xdelta) != '.')
+		{
+			foundSeat = true;
+			seatX = xdelta;
+			seatY = ydelta;
+		}
+	}
+
+	return foundSeat;
+}
+
+
+// down and left diagonal
+bool FindFirstSeatDL(const vector<string>& seats, int xStart, int yStart, int& seatX, int& seatY)
+{
+	bool foundSeat = false;
+	int xMaxDelta = xStart;
+	int yMaxDelta = seats.size() - yStart;
+	int maxDelta = max(xMaxDelta, yMaxDelta);
+
+	for (int delta = 1; delta < maxDelta; delta++)
+	{
+		int xdelta = xStart - delta;
+		int ydelta = yStart + delta;
+
+		if (seats[ydelta].at(xdelta) != '.')
+		{
+			foundSeat = true;
+			seatX = xdelta;
+			seatY = ydelta;
+		}
+	}
+
+	return foundSeat;
+}
+
+
+
+bool SeatTransformPartB(const vector<string>& before, vector<string>& after)
+{
+	size_t xMax = before[0].length();
+	bool seatChanged = false;
+
+	for (size_t y = 0; y < before.size(); y++)
+	{
+		for (size_t x = 0; x < xMax; x++)
+		{
+			if (x == 0)
+				after.push_back(string());
+
+			if (before[y].at(x) == '.')
+			{
+				after[y].push_back('.');
+			}
+			else if (before[y].at(x) == 'L')
+			{
+				bool foundOccupied = false;
+				int seatX, seatY;
+				if (FindFirstSeatUp(before, x, y, seatX, seatY))
+				{
+					if (before[y].at(x) == '#')
+						foundOccupied = true;
+				}
+
+				if (FindFirstSeatDown(before, x, y, seatX, seatY))
+				{
+					if (before[y].at(x) == '#')
+						foundOccupied = true;
+				}
+		
+
+				if (FindFirstSeatLeft(before, x, y, seatX, seatY))
+				{
+					if (before[y].at(x) == '#')
+						foundOccupied = true;
+				}
+
+				if (FindFirstSeatRight(before, x, y, seatX, seatY))
+				{
+					if (before[y].at(x) == '#')
+						foundOccupied = true;
+				}
+
+
+
+				if (FindFirstSeatUR(before, x, y, seatX, seatY))
+				{
+					if (before[y].at(x) == '#')
+						foundOccupied = true;
+				}
+
+				if (FindFirstSeatDR(before, x, y, seatX, seatY))
+				{
+					if (before[y].at(x) == '#')
+						foundOccupied = true;
+				}
+
+
+				if (FindFirstSeatDL(before, x, y, seatX, seatY))
+				{
+					if (before[y].at(x) == '#')
+						foundOccupied = true;
+				}
+
+				if (FindFirstSeatUL(before, x, y, seatX, seatY))
+				{
+					if (before[y].at(x) == '#')
+						foundOccupied = true;
+				}
+
+				if (!foundOccupied)
+				{
+					after[y].push_back('#');
+					seatChanged = true;;
+				}
+				else
+				{
+					after[y].push_back('L');
+				}
+
+			}
+			else if (before[y].at(x) == '#')
+			{
+				int occupiedCount = 0;
+
+				int seatX, seatY;
+				if (FindFirstSeatUp(before, x, y, seatX, seatY))
+				{
+					if (before[y].at(x) == '#')
+						occupiedCount++;
+				}
+
+				if (FindFirstSeatDown(before, x, y, seatX, seatY))
+				{
+					if (before[y].at(x) == '#')
+						occupiedCount++;
+				}
+
+
+				if (FindFirstSeatLeft(before, x, y, seatX, seatY))
+				{
+					if (before[y].at(x) == '#')
+						occupiedCount++;
+				}
+
+				if (FindFirstSeatRight(before, x, y, seatX, seatY))
+				{
+					if (before[y].at(x) == '#')
+						occupiedCount++;
+				}
+
+
+
+				if (FindFirstSeatUR(before, x, y, seatX, seatY))
+				{
+					if (before[y].at(x) == '#')
+						occupiedCount++;
+				}
+
+				if (FindFirstSeatDR(before, x, y, seatX, seatY))
+				{
+					if (before[y].at(x) == '#')
+						occupiedCount++;
+				}
+
+
+				if (FindFirstSeatDL(before, x, y, seatX, seatY))
+				{
+					if (before[y].at(x) == '#')
+						occupiedCount++;
+				}
+
+				if (FindFirstSeatUL(before, x, y, seatX, seatY))
+				{
+					if (before[y].at(x) == '#')
+						occupiedCount++;
+				}
+
+				if (occupiedCount >= 5)
+				{
+					after[y].push_back('L');
+					seatChanged = true;;
+				}
+				else
+				{
+					after[y].push_back('#');
+				}
+			}
+		}
+	}
+
+	return seatChanged;
+}
 int PartB(vector<string>& lines)
 {
-	cout << "TBD" << endl;
+	vector<string> init;
+	vector<string> next;
+
+	if (lines.size() < 3)
+	{
+		cout << " NOT ENOUGH LINES! " << endl;
+		return -1;
+	}
+
+	int rounds = 0;
+	bool transformDidChange = true;
+
+	VectorCopy(lines, init);
+
+	while (rounds < 100 && transformDidChange)
+	{
+		rounds++;
+		//cout << endl << endl;
+		//cout << "*************************" << endl;
+		//cout << "Round : " << rounds << endl;
+
+		transformDidChange = SeatTransformPartB(init, next);
+
+		//cout << "Before:" << endl;
+		//PrintSeatMap(init);
+		//cout << endl << "After: " << endl;
+		//PrintSeatMap(next);
+
+		VectorCopy(next, init);
+		next.clear();
+	}
+
+	cout << "Rounds = " << rounds << endl;
+
+	cout << " Number occupied = " << CountOccupied(init) << endl;
+
+
 	return 0;
 }
