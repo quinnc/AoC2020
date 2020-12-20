@@ -7,6 +7,12 @@
 #include <fstream>
 #include <list>
 #include <algorithm>    // std::sort
+#include <map>
+#include <mutex>
+
+#include <thread>
+#include <future>
+
 
 #include "FileLoad.h"
 
@@ -47,10 +53,10 @@ void PrepAdapters(const vector<string>& lines, vector<int>& adapterJolts)
 
 	std::sort(adapterJolts.begin(), adapterJolts.end());
 
-	for (auto j : adapterJolts)
+	/*for (auto j : adapterJolts)
 		cout << " " << j;
-	cout << endl;
- }
+	cout << endl;*/
+}
 
 
 int PartA(vector<string>& lines)
@@ -89,167 +95,106 @@ void PDepth(int depth)
 		cout << "\t";
 }
 
-
-unsigned long long  int FindPathsDepth2Plus(const vector<int>& adapterJolts, int startIndex, int startJolt, int targetJolt)
+struct DepthResults
 {
-	unsigned long long int pathsHere = 0;
 
-	//cout << " FindPathsDepth2Plus() start index = " << startIndex << ", Jolts start=" << startJolt << ", target=" << targetJolt << endl;
+	unsigned long long int paths;
+	size_t index;
+	bool inProgress;
+	mutex mtx;
 
+};
 
-	size_t i = startIndex;
-	while (i < adapterJolts.size() && ((adapterJolts[i] - startJolt) <= 3))
-	{
-		if (adapterJolts[i] != targetJolt)
-		{
-			i++;
-			pathsHere += FindPathsDepth2Plus (adapterJolts, i, adapterJolts[i - 1], targetJolt);
-		}
-		else
-		{
-			return pathsHere + 1;
-		}
-	}
+mutex mapmtx;
+map<size_t, DepthResults*> results;
 
-	return pathsHere;
-}
-
-
-#include <thread>
-#include <future>
-
-unsigned long long  int FindPathsDepth1 (const vector<int>& adapterJolts, int startIndex, int startJolt, int targetJolt)
-{
-	unsigned long long int pathsHere = 0;
-
-	size_t i = startIndex;
-	
-	future <unsigned long long int>  f1, f2;
-	bool doF1 = false;
-	bool doF2 = false;
-
-
-	cout << " FindPathsDepth1() start index = " << startIndex << ", Jolts start=" << startJolt << ", target=" << targetJolt << endl;
-
-
-
-	// up to 3 steps more
-	size_t currIndex = startIndex + 2;
-	if (currIndex < adapterJolts.size())
-	{
-		if (adapterJolts[currIndex] == targetJolt)
-			pathsHere++;
-		else if ((adapterJolts[currIndex] - startJolt) <= 3)
-		{
-			doF2 = true;
-			f2 = std::async(FindPathsDepth2Plus, adapterJolts, currIndex + 1, adapterJolts[currIndex], targetJolt);
-		}
-
-	}
-
-	currIndex = startIndex + 1;
-	if (currIndex < adapterJolts.size())
-	{
-		if (adapterJolts[currIndex] == targetJolt)
-			pathsHere++;
-		else if ((adapterJolts[currIndex] - startJolt) <= 3)
-		{
-			f1 = std::async(FindPathsDepth2Plus, adapterJolts, currIndex + 1, adapterJolts[currIndex], targetJolt);
-			doF1 = true;
-		}
-
-	}
-
-
-	currIndex = startIndex;
-	if (currIndex < adapterJolts.size())
-	{
-		if (adapterJolts[currIndex] == targetJolt)
-			pathsHere++;
-		else if ((adapterJolts[currIndex] - startJolt) <= 3)
-			pathsHere += FindPathsDepth2Plus(adapterJolts, currIndex+1, adapterJolts[currIndex], targetJolt);
-		cout << " FindPathsDepth1() Paths here after self loop == " << pathsHere << endl;
-
-	}
-
-	if (doF2) {
-		pathsHere += f2.get();
-		cout << " FindPathsDepth1() Paths here after f2 == " << pathsHere << endl;
-	}
-	if (doF1)
-	{
-		pathsHere += f1.get();
-		cout << " FindPathsDepth1() Paths here after f1 == " << pathsHere << endl;
-	}
-
-	return pathsHere;
-}
 
 
 // returns the number of paths found
 unsigned long long  int FindPaths(const vector<int>& adapterJolts, int startIndex, int startJolt, int targetJolt)
 {
 	unsigned long long int pathsHere = 0;
-
-
 	size_t i = startIndex;
 
-	future <unsigned long long int>  f1, f2;
-	bool doF1 = false, doF2 = false;
+	const int MAX = 3;
+	future <unsigned long long int>  f[MAX];
+	bool doF[MAX] = { false, false, false };
+	DepthResults dr;
 
-
-	cout << " FindPaths() start index = " << startIndex << ", Jolts start=" << startJolt << ", target=" << targetJolt << endl;
-
-	// up to 3 steps more
-	size_t currIndex = startIndex + 2;
-	if (currIndex < adapterJolts.size())
+	mapmtx.lock();
+	auto currResults = results.find(startIndex);
+	if (currResults != results.end())
 	{
-		if (adapterJolts[currIndex] == targetJolt)
-			pathsHere++;
-		else if ((adapterJolts[currIndex] - startJolt) <= 3)
+		mapmtx.unlock();
+
+		if (currResults->second->inProgress)
 		{
-			doF2 = true;
-			f2 = std::async(FindPathsDepth1, adapterJolts, currIndex + 1, adapterJolts[currIndex], targetJolt);
+
+			// wait here for the results
+			currResults->second->mtx.lock();
+
+
+			currResults->second->mtx.unlock();
 		}
 
+		if (currResults->second->inProgress || (currResults->second->paths == 0))
+			cout << " STILL IN PROGRESS! or paths = 0 WHAT? " << currResults->second->index << endl;
+
+		return currResults->second->paths;
 	}
 
-	currIndex = startIndex + 1;
-	if (currIndex < adapterJolts.size())
+
+	// else haven't hit this one yet, so create an entry and dive along the path
+	dr.paths = 0;
+	dr.index = startIndex;
+	dr.inProgress = true;
+	dr.mtx.lock();
+	//results.emplace(std::make_pair(startIndex, dr));
+	results[startIndex] = &dr;
+	mapmtx.unlock();
+
+	for (i = 0; i < MAX; i++)
 	{
-		if (adapterJolts[currIndex] == targetJolt)
-			pathsHere++;
-		else if ((adapterJolts[currIndex] - startJolt) <= 3)
+		size_t currIndex = startIndex + i;
+		if (currIndex < adapterJolts.size())
 		{
-			doF1 = true;
-			f1 = std::async(FindPathsDepth1, adapterJolts, currIndex + 1, adapterJolts[currIndex], targetJolt);
+			if (adapterJolts[currIndex] == targetJolt)
+			{
+				pathsHere++;
+			}
+			else if ((adapterJolts[currIndex] - startJolt) <= 3)
+			{
+				f[i] = std::async(FindPaths, adapterJolts, currIndex + 1, adapterJolts[currIndex], targetJolt);
+				doF[i] = true;
+			}
 		}
-
 	}
 
-
-	currIndex = startIndex;
-	if (currIndex < adapterJolts.size())
+	for (i = 0; i < MAX; i++)
 	{
-		if (adapterJolts[currIndex] == targetJolt)
-			pathsHere++;
-		else if ((adapterJolts[currIndex] - startJolt) <= 3)
-			pathsHere += FindPathsDepth1(adapterJolts, currIndex+1, adapterJolts[currIndex], targetJolt);
+		if (doF[i])
+		{
+			pathsHere += f[i].get();
 
-		cout << " FindPaths() Paths here after self loop == " << pathsHere << endl;
+		}
 	}
 
-	if (doF2)
+	// calculation done, so update the entry
+	mapmtx.lock();
+	currResults = results.find(startIndex);
+	if (currResults != results.end())
 	{
-		pathsHere += f2.get();
-		cout << " FindPaths() Paths here after f2 == " << pathsHere << endl;
+		currResults->second->paths = pathsHere;
+		currResults->second->inProgress = false;
+		// release everyone waiting for the results
+		currResults->second->mtx.unlock();
 	}
-
-	if (doF1)
+	else
 	{
-		pathsHere += f1.get();
-		cout << " FindPaths() Paths here after f1 == " << pathsHere << endl;
+		cout << "Couldn't find the entry that I was working on! " << startIndex << endl;
 	}
+	mapmtx.unlock();
+
 	return pathsHere;
 }
 
