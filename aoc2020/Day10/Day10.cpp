@@ -53,9 +53,9 @@ void PrepAdapters(const vector<string>& lines, vector<int>& adapterJolts)
 
 	std::sort(adapterJolts.begin(), adapterJolts.end());
 
-	/*for (auto j : adapterJolts)
+	for (auto j : adapterJolts)
 		cout << " " << j;
-	cout << endl;*/
+	cout << endl;
 }
 
 
@@ -98,17 +98,14 @@ void PDepth(int depth)
 struct DepthResults
 {
 
-	unsigned long long int paths;
-	size_t index;
-	bool inProgress;
+	unsigned long long int paths = 0;
+	size_t index = -1;
+	bool inProgress = false;
 	mutex mtx;
-
 };
 
 mutex mapmtx;
 map<size_t, DepthResults*> results;
-
-
 
 // returns the number of paths found
 unsigned long long  int FindPaths(const vector<int>& adapterJolts, int startIndex, int startJolt, int targetJolt)
@@ -119,17 +116,27 @@ unsigned long long  int FindPaths(const vector<int>& adapterJolts, int startInde
 	const int MAX = 3;
 	future <unsigned long long int>  f[MAX];
 	bool doF[MAX] = { false, false, false };
-	DepthResults dr;
 
+
+
+	cout << " FindPaths() start index = " << startIndex << ", Jolts start=" << startJolt << ", target=" << targetJolt << endl;
+
+	if (adapterJolts[startIndex] == targetJolt)
+		return 1;
+
+
+	DepthResults* dr = new DepthResults();
 	mapmtx.lock();
 	auto currResults = results.find(startIndex);
 	if (currResults != results.end())
 	{
+
+		cout << " FindPaths() start index = " << startIndex << ", Jolts start=" << startJolt << ", target=" << targetJolt << ".  Found entry, waiting for results..." << endl;
+
 		mapmtx.unlock();
 
 		if (currResults->second->inProgress)
 		{
-
 			// wait here for the results
 			currResults->second->mtx.lock();
 
@@ -140,32 +147,45 @@ unsigned long long  int FindPaths(const vector<int>& adapterJolts, int startInde
 		if (currResults->second->inProgress || (currResults->second->paths == 0))
 			cout << " STILL IN PROGRESS! or paths = 0 WHAT? " << currResults->second->index << endl;
 
+
+		cout << " FindPaths() start index = " << startIndex << ", Jolts start=" << startJolt << ", target=" << targetJolt << ". Waiting complete: paths = " << currResults->second->paths << endl;
+
 		return currResults->second->paths;
 	}
 
 
+	//cout << " FindPaths() start index = " << startIndex << ", Jolts start=" << startJolt << ", target=" << targetJolt << ". Starting calculation..." << endl;
+
 	// else haven't hit this one yet, so create an entry and dive along the path
-	dr.paths = 0;
-	dr.index = startIndex;
-	dr.inProgress = true;
-	dr.mtx.lock();
+	dr->paths = 0;
+	dr->index = startIndex;
+	dr->inProgress = true;
+	dr->mtx.lock();
 	//results.emplace(std::make_pair(startIndex, dr));
-	results[startIndex] = &dr;
+	results[startIndex] = dr;
 	mapmtx.unlock();
+
+
+
 
 	for (i = 0; i < MAX; i++)
 	{
 		size_t currIndex = startIndex + i;
 		if (currIndex < adapterJolts.size())
 		{
-			if (adapterJolts[currIndex] == targetJolt)
+			if ((adapterJolts[currIndex] - startJolt) <= 3) 
 			{
-				pathsHere++;
-			}
-			else if ((adapterJolts[currIndex] - startJolt) <= 3)
-			{
-				f[i] = std::async(FindPaths, adapterJolts, currIndex + 1, adapterJolts[currIndex], targetJolt);
-				doF[i] = true;
+				if (currIndex >= (adapterJolts.size() - 1))
+				{
+					pathsHere++;
+				}
+				else // && currIndex < (adapterJolts.size()-1))
+				{
+					f[i] = std::async(FindPaths, adapterJolts, currIndex + 1, adapterJolts[currIndex], targetJolt);
+					doF[i] = true;
+
+					//pathsHere += FindPaths(adapterJolts, currIndex + 1, adapterJolts[currIndex], targetJolt);
+				}
 			}
 		}
 	}
@@ -174,8 +194,9 @@ unsigned long long  int FindPaths(const vector<int>& adapterJolts, int startInde
 	{
 		if (doF[i])
 		{
+			//cout << " FindPaths() start index = " << startIndex << ", Jolts start=" << startJolt << " i=" << i << " paths before get results=" << pathsHere << endl;
 			pathsHere += f[i].get();
-
+			//cout << " FindPaths() start index = " << startIndex << ", Jolts start=" << startJolt << " i=" << i << " paths after get results=" << pathsHere << endl;
 		}
 	}
 
@@ -195,6 +216,7 @@ unsigned long long  int FindPaths(const vector<int>& adapterJolts, int startInde
 	}
 	mapmtx.unlock();
 
+	//cout << " FindPaths() start index = " << startIndex << ", Jolts start=" << startJolt << ", target=" << targetJolt << ". Calculation complete: " << pathsHere << endl;
 	return pathsHere;
 }
 
