@@ -78,7 +78,7 @@ bool SeatTransform(const vector<string>& before, vector<string>& after)
 						if (currX < 0)
 							continue;
 
-						if (currY >= (int)xMax)
+						if (currX >= (int)xMax)
 							continue;
 
 						if (currX == 0 && currY == 0) // self
@@ -123,7 +123,7 @@ bool SeatTransform(const vector<string>& before, vector<string>& after)
 						if (currX < 0)
 							continue;
 
-						if (currY >= (int)xMax)
+						if (currX >= (int)xMax)
 							continue;
 
 						if (currX == 0 && currY == 0) // self
@@ -154,6 +154,12 @@ bool SeatTransform(const vector<string>& before, vector<string>& after)
 }
 
 
+void PrintSeatMap(const vector<string>& seats)
+{
+	for (auto row : seats)
+		cout << row << endl;
+}
+
 unsigned int CountOccupied(const vector<string>& init)
 {
 	size_t xMax = init[0].length();
@@ -171,6 +177,13 @@ unsigned int CountOccupied(const vector<string>& init)
 	return count;
 }
 
+template <class T>
+void VectorCopy(const vector<T>& Src, vector<T>& Dest)
+{
+	Dest.clear();
+	for (auto a : Src)
+		Dest.push_back(a);
+}
 
 int PartA(vector<string>& lines)
 {
@@ -186,16 +199,24 @@ int PartA(vector<string>& lines)
 	int rounds = 0;
 	bool transformDidChange = true;
 
-	std::copy(lines.begin(), lines.end(), init.begin());
+	VectorCopy(lines, init);
 
 	while (rounds < 100 && transformDidChange)
 	{
+		rounds++;
+		cout << endl << endl;
+		cout << "*************************" << endl;
+		cout << "Round : " << rounds << endl;
+
 		transformDidChange = SeatTransform(init, next);
 
-		init.clear();
-		std::copy(next.begin(), next.end(), init.begin());
+		cout << "Before:" << endl;
+		PrintSeatMap(init); 
+		cout << endl << "After: " << endl;
+		PrintSeatMap(next);
+
+		VectorCopy(next, init);
 		next.clear();
-		rounds++;
 	}
 
 	cout << "Rounds = " << rounds << endl;
