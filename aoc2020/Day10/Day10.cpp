@@ -119,7 +119,7 @@ unsigned long long  int FindPaths(const vector<int>& adapterJolts, int startInde
 
 
 
-	cout << " FindPaths() start index = " << startIndex << ", Jolts start=" << startJolt << ", target=" << targetJolt << endl;
+	//cout << " FindPaths() start index = " << startIndex << ", Jolts start=" << startJolt << ", target=" << targetJolt << endl;
 
 	if (adapterJolts[startIndex] == targetJolt)
 		return 1;
@@ -131,7 +131,7 @@ unsigned long long  int FindPaths(const vector<int>& adapterJolts, int startInde
 	if (currResults != results.end())
 	{
 
-		cout << " FindPaths() start index = " << startIndex << ", Jolts start=" << startJolt << ", target=" << targetJolt << ".  Found entry, waiting for results..." << endl;
+		//cout << " FindPaths() start index = " << startIndex << ", Jolts start=" << startJolt << ", target=" << targetJolt << ".  Found entry, waiting for results..." << endl;
 
 		mapmtx.unlock();
 
@@ -148,7 +148,7 @@ unsigned long long  int FindPaths(const vector<int>& adapterJolts, int startInde
 			cout << " STILL IN PROGRESS! or paths = 0 WHAT? " << currResults->second->index << endl;
 
 
-		cout << " FindPaths() start index = " << startIndex << ", Jolts start=" << startJolt << ", target=" << targetJolt << ". Waiting complete: paths = " << currResults->second->paths << endl;
+		//cout << " FindPaths() start index = " << startIndex << ", Jolts start=" << startJolt << ", target=" << targetJolt << ". Waiting complete: paths = " << currResults->second->paths << endl;
 
 		return currResults->second->paths;
 	}
