@@ -126,7 +126,7 @@ bool SeatTransform(const vector<string>& before, vector<string>& after)
 						if (currX >= (int)xMax)
 							continue;
 
-						if (currX == 0 && currY == 0) // self
+						if (xLook == 0 && yLook == 0) // self
 							continue;
 
 
@@ -204,16 +204,16 @@ int PartA(vector<string>& lines)
 	while (rounds < 100 && transformDidChange)
 	{
 		rounds++;
-		cout << endl << endl;
-		cout << "*************************" << endl;
-		cout << "Round : " << rounds << endl;
+		//cout << endl << endl;
+		//cout << "*************************" << endl;
+		//cout << "Round : " << rounds << endl;
 
 		transformDidChange = SeatTransform(init, next);
 
-		cout << "Before:" << endl;
-		PrintSeatMap(init); 
-		cout << endl << "After: " << endl;
-		PrintSeatMap(next);
+		//cout << "Before:" << endl;
+		//PrintSeatMap(init);
+		//cout << endl << "After: " << endl;
+		//PrintSeatMap(next);
 
 		VectorCopy(next, init);
 		next.clear();
@@ -222,7 +222,7 @@ int PartA(vector<string>& lines)
 	cout << "Rounds = " << rounds << endl;
 
 	cout << " Number occupied = " << CountOccupied(init) << endl;
-	
+
 
 	return 0;
 
