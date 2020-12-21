@@ -27,8 +27,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Day10", "Day10\Day10.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Day11", "Day11\Day11.vcxproj", "{947FBAC4-773E-43DB-B9D1-1AAFBF104C3A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Day12", "Day12\Day12.vcxproj", "{011531DE-FE6A-4A9F-820E-5F20537237A9}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		SharedCode\SharedCode.vcxitems*{011531de-fe6a-4a9f-820e-5f20537237a9}*SharedItemsImports = 4
 		SharedCode\SharedCode.vcxitems*{0fbd7f32-5dc8-4550-861c-b193be292ec7}*SharedItemsImports = 4
 		SharedCode\SharedCode.vcxitems*{127bc95f-e8db-45f0-97a6-7e786c30e6dc}*SharedItemsImports = 9
 		SharedCode\SharedCode.vcxitems*{20473d59-6197-4e94-9648-22581ce2bda3}*SharedItemsImports = 4
@@ -134,6 +137,14 @@ Global
 		{947FBAC4-773E-43DB-B9D1-1AAFBF104C3A}.Release|x64.Build.0 = Release|x64
 		{947FBAC4-773E-43DB-B9D1-1AAFBF104C3A}.Release|x86.ActiveCfg = Release|Win32
 		{947FBAC4-773E-43DB-B9D1-1AAFBF104C3A}.Release|x86.Build.0 = Release|Win32
+		{011531DE-FE6A-4A9F-820E-5F20537237A9}.Debug|x64.ActiveCfg = Debug|x64
+		{011531DE-FE6A-4A9F-820E-5F20537237A9}.Debug|x64.Build.0 = Debug|x64
+		{011531DE-FE6A-4A9F-820E-5F20537237A9}.Debug|x86.ActiveCfg = Debug|Win32
+		{011531DE-FE6A-4A9F-820E-5F20537237A9}.Debug|x86.Build.0 = Debug|Win32
+		{011531DE-FE6A-4A9F-820E-5F20537237A9}.Release|x64.ActiveCfg = Release|x64
+		{011531DE-FE6A-4A9F-820E-5F20537237A9}.Release|x64.Build.0 = Release|x64
+		{011531DE-FE6A-4A9F-820E-5F20537237A9}.Release|x86.ActiveCfg = Release|Win32
+		{011531DE-FE6A-4A9F-820E-5F20537237A9}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
