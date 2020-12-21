@@ -29,7 +29,7 @@ int main(int argc, char** argv)
 	}
 
 	cout << "Day 11 part a : " << PartA(lines) << endl;
-	cout << "Day 11 part b : " << PartB(lines) << endl;
+	//cout << "Day 11 part b : " << PartB(lines) << endl;
 
 	return 0;
 }
@@ -37,7 +37,7 @@ int main(int argc, char** argv)
 
 int ManhattanDistance(int x, int y)
 {
-	cout << " distance? x=" << x << ", abs(x)=" << abs(x) << ", y=" << y << ", abs(y)=" << abs(y) << endl;
+	//cout << " distance? x=" << x << ", abs(x)=" << abs(x) << ", y=" << y << ", abs(y)=" << abs(y) << endl;
 	return (abs(x) + abs(y));
 }
 
@@ -52,13 +52,13 @@ int PartA(vector<string>& lines)
 
 	for (auto line : lines)
 	{
-		cout << endl;
-		cout << " Current line >>" << line << "<<" << endl;
+		//cout << endl;
+		//cout << " Current line >>" << line << "<<" << endl;
 		// turn right 90 deg or left 270 deg
 		if (((line[0] == 'R') && (line[1] == '9')) ||
 			((line[0] == 'L') && (line[1] == '2')))
 		{
-			cout << "turning from " << currDir;
+			////cout << "turning from " << currDir;
 			switch (currDir)
 			{
 			case 'N':
@@ -81,7 +81,7 @@ int PartA(vector<string>& lines)
 				throw std::exception("unkonw dir");
 			}
 
-			cout << " to " << currDir << endl;
+			//cout << " to " << currDir << endl;
 			continue;
 		}
 
@@ -90,7 +90,7 @@ int PartA(vector<string>& lines)
 			((line[0] == 'L') && (line[1] == '9')))
 		{
 
-			cout << " turning from " << currDir;
+			//cout << " turning from " << currDir;
 			switch (currDir)
 			{
 			case 'N':
@@ -113,7 +113,7 @@ int PartA(vector<string>& lines)
 				throw std::exception("unkonw dir");
 			}
 
-			cout << " to " << currDir << endl;
+			//cout << " to " << currDir << endl;
 			continue;
 		}
 
@@ -121,7 +121,7 @@ int PartA(vector<string>& lines)
 		if (((line[0] == 'R') && (line[1] == '1')) ||
 			((line[0] == 'L') && (line[1] == '1')))
 		{
-			cout << "turning from " << currDir;
+			//cout << "turning from " << currDir;
 			switch (currDir)
 			{
 			case 'N':
@@ -144,14 +144,14 @@ int PartA(vector<string>& lines)
 				throw std::exception("unkonw dir");
 			}
 
-			cout << " to " << currDir << endl;
+			//cout << " to " << currDir << endl;
 			continue;
 		}
 
 		int dist = stoi(line.substr(1));
 		if (line[0] == 'F')
 		{
-			cout << " changing Forward to " << currDir << endl;
+			//cout << " changing Forward to " << currDir << endl;
 			line[0] = currDir;
 		}
 
@@ -161,21 +161,21 @@ int PartA(vector<string>& lines)
 		{
 		case 'N':
 			currY -= dist;
-			cout << " going North " << dist << endl;
+			//cout << " going North " << dist << endl;
 			break;
 
 		case 'E':
 			currX += dist;
-			cout << " going East " << dist << endl;
+			//cout << " going East " << dist << endl;
 			break;
 
 		case 'S':
 			currY += dist;
-			cout << " going South " << dist << endl;
+			//cout << " going South " << dist << endl;
 			break;
 
 		case 'W':
-			cout << " going West " << dist << endl;
+			//cout << " going West " << dist << endl;
 			currX -= dist;
 			break;
 
@@ -186,9 +186,9 @@ int PartA(vector<string>& lines)
 	}
 
 	int d = ManhattanDistance(currX, currY);
-	cout << " net distance travelled: " << d << endl;
+	//cout << " net distance travelled: " << d << endl;
 
-	return 0;
+	return d;
 }
 
 int PartB(vector<string>& lines)
