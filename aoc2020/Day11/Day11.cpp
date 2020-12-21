@@ -307,7 +307,7 @@ bool FindFirstSeatUR(const vector<string>& seats, int xStart, int yStart, int& s
 {
 	bool foundSeat = false;
 	int xMaxDelta = seats[0].length() - xStart;
-	int yMaxDelta = yStart;
+	int yMaxDelta = yStart+1;
 	int maxDelta = min(xMaxDelta, yMaxDelta);
 
 	for (int delta = 1; delta < maxDelta; delta++)
@@ -357,8 +357,8 @@ bool FindFirstSeatDR(const vector<string>& seats, int xStart, int yStart, int& s
 bool FindFirstSeatUL(const vector<string>& seats, int xStart, int yStart, int& seatX, int& seatY)
 {
 	bool foundSeat = false;
-	int xMaxDelta = xStart;
-	int yMaxDelta = yStart;
+	int xMaxDelta = xStart+1;
+	int yMaxDelta = yStart+1;
 	int maxDelta = min(xMaxDelta, yMaxDelta);
 
 	for (int delta = 1; delta < maxDelta; delta++)
@@ -383,7 +383,7 @@ bool FindFirstSeatUL(const vector<string>& seats, int xStart, int yStart, int& s
 bool FindFirstSeatDL(const vector<string>& seats, int xStart, int yStart, int& seatX, int& seatY)
 {
 	bool foundSeat = false;
-	int xMaxDelta = xStart;
+	int xMaxDelta = xStart+1;
 	int yMaxDelta = seats.size() - yStart;
 	int maxDelta = min(xMaxDelta, yMaxDelta);
 
@@ -474,7 +474,7 @@ bool SeatTransformPartB(const vector<string>& before, vector<string>& after)
 				seatX = seatY = -1;
 				if (FindFirstSeatDL(before, x, y, seatX, seatY))
 				{
-					if (before[seatY].at(seatX)) == '#')
+					if (before[seatY].at(seatX) == '#')
 						foundOccupied = true;
 				}
 
