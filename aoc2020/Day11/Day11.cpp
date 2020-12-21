@@ -593,16 +593,16 @@ int PartB(vector<string>& lines)
 	while (rounds < 100 && transformDidChange)
 	{
 		rounds++;
-		cout << endl << endl;
+		/*cout << endl << endl;
 		cout << "*************************" << endl;
-		cout << "Round : " << rounds << endl;
+		cout << "Round : " << rounds << endl;*/
 
 		transformDidChange = SeatTransformPartB(init, next);
 
-		cout << "Before:" << endl;
+		/*cout << "Before:" << endl;
 		PrintSeatMap(init);
 		cout << endl << "After: " << endl;
-		PrintSeatMap(next);
+		PrintSeatMap(next);*/
 
 		VectorCopy(next, init);
 		next.clear();
