@@ -29,7 +29,7 @@ int main(int argc, char** argv)
 	}
 
 	cout << "Day 11 part a : " << PartA(lines) << endl;
-	//cout << "Day 11 part b : " << PartB(lines) << endl;
+	cout << "Day 11 part b : " << PartB(lines) << endl;
 
 	return 0;
 }
