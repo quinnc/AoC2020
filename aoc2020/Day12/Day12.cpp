@@ -256,12 +256,12 @@ int PartB(vector<string>& lines)
 			cout << " Action is FORWARD" << endl;
 			cout << "Boat @ " << boatX << "," << boatY << endl;
 			cout << "Way point @ " << wayX << "," << wayY << endl;
-			int boatToWayX = wayX - boatX;
+			/*int boatToWayX = wayX - boatX;
 			int boatToWayY = wayY - boatY;
 
-			cout << " Delta = " << boatToWayX << "," << boatToWayY << ", multiplier: " << dist << endl;
-			boatX += (boatToWayX * dist);
-			boatY += (boatToWayY * dist);
+			cout << " Delta = " << boatToWayX << "," << boatToWayY << ", multiplier: " << dist << endl;*/
+			boatX += (wayX * dist);
+			boatY += (wayY * dist);
 			cout << " after: Boat @ " << boatX << "," << boatY << endl;
 			cout << endl;
 		}
