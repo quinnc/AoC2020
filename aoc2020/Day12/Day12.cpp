@@ -193,7 +193,6 @@ int PartA(vector<string>& lines)
 
 int PartB(vector<string>& lines)
 {
-	char currDir = 'E';
 	int boatX = 0;
 	int boatY = 0;
 	int wayX = 10;
@@ -207,14 +206,15 @@ int PartB(vector<string>& lines)
 		if (((line[0] == 'R') && (line[1] == '9')) ||
 			((line[0] == 'L') && (line[1] == '2')))
 		{
-			cout << "turning from " << wayX << "," << wayY;
-			int xMult = (wayY < 0) ? -1 : 1;
-			int yMult = (wayX < 0)
-			int t = wayY;
-			wayY = wayX;
-			wayX = t;
+			cout << "turning from " << wayX << "," << wayY << endl;
+			int xMult = -1;
+			int yMult = 1;
 
-			cout << " to " << currDir << endl;
+			int tempY = wayY;
+			wayY = wayX * yMult;
+			wayX = tempY * xMult;
+
+			cout << " to " << wayX << ", " << wayY << endl;
 			continue;
 		}
 
@@ -222,31 +222,15 @@ int PartB(vector<string>& lines)
 		if (((line[0] == 'R') && (line[1] == '2')) ||
 			((line[0] == 'L') && (line[1] == '9')))
 		{
+			cout << "turning from " << wayX << "," << wayY << endl;
+			int xMult = 1;
+			int yMult = -1;
 
-			//cout << " turning from " << currDir;
-			switch (currDir)
-			{
-			case 'N':
-				currDir = 'W';
-				break;
+			int tempY = wayY;
+			wayY = wayX * yMult;
+			wayX = tempY * xMult;
 
-			case 'E':
-				currDir = 'N';
-				break;
-
-			case 'S':
-				currDir = 'E';
-				break;
-
-			case 'W':
-				currDir = 'S';
-				break;
-
-			default:
-				throw std::exception("unkonw dir");
-			}
-
-			//cout << " to " << currDir << endl;
+			cout << " to " << wayX << ", " << wayY << endl;
 			continue;
 		}
 
@@ -262,34 +246,45 @@ int PartB(vector<string>& lines)
 		}
 
 		int dist = stoi(line.substr(1));
-		if (line[0] == 'F')
-		{
-			//cout << " changing Forward to " << currDir << endl;
-			line[0] = currDir;
-		}
-
-
 
 		switch (line[0])
 		{
+		case 'F':
+		{
+			// move the boat in the direction of waypoint, multiplied by 'dist' times
+			cout << endl;
+			cout << " Action is FORWARD" << endl;
+			cout << "Boat @ " << boatX << "," << boatY << endl;
+			cout << "Way point @ " << wayX << "," << wayY << endl;
+			int boatToWayX = wayX - boatX;
+			int boatToWayY = wayY - boatY;
+
+			cout << " Delta = " << boatToWayX << "," << boatToWayY << ", multiplier: " << dist << endl;
+			boatX += (boatToWayX * dist);
+			boatY += (boatToWayY * dist);
+			cout << " after: Boat @ " << boatX << "," << boatY << endl;
+			cout << endl;
+		}
+		break;
+
 		case 'N':
-			boatY -= dist;
-			//cout << " going North " << dist << endl;
+			wayY -= dist;
+			cout << " going North " << dist << endl;
 			break;
 
 		case 'E':
-			boatX += dist;
-			//cout << " going East " << dist << endl;
+			wayX += dist;
+			cout << " going East " << dist << endl;
 			break;
 
 		case 'S':
-			boatY += dist;
-			//cout << " going South " << dist << endl;
+			wayY += dist;
+			cout << " going South " << dist << endl;
 			break;
 
 		case 'W':
-			//cout << " going West " << dist << endl;
-			boatX -= dist;
+			cout << " going West " << dist << endl;
+			wayX -= dist;
 			break;
 
 		default:
@@ -299,7 +294,7 @@ int PartB(vector<string>& lines)
 	}
 
 	int d = ManhattanDistance(boatX, boatY);
-	//cout << " net distance travelled: " << d << endl;
+	cout << " net distance travelled: " << d << endl;
 
 	return d;
 }
