@@ -17,7 +17,7 @@ using namespace std;
 
 
 int PartA(vector<string>& lines);
-int PartB(vector<string>& lines);
+unsigned long long int PartB(vector<string>& lines);
 
 
 int main(int argc, char** argv)
@@ -91,8 +91,66 @@ int PartA(vector<string>& lines)
 	return bestBus * waitTime;
 }
 
-int PartB(vector<string>& lines)
+unsigned long long int PartB(vector<string>& lines)
 {
-	return -2;
+	cout << "unsigned long long max = " << ULLONG_MAX << endl;
+	cout << "unsigned long max = " << ULONG_MAX << endl;
+
+	std::vector<std::string> buses;
+	boost::split(buses, lines[1], [](char c) {return c == ','; });
+
+	bool found = false;
+	int max = -1;
+	std::vector<int> busesAsInts;
+
+	for (auto s : buses)
+	{
+		if (s[0] == 'x')
+		{
+			busesAsInts.push_back(-1);
+			continue;
+		}
+
+		int busInt = stoi(s);
+		if (busInt > max)
+			max = busInt;
+
+		busesAsInts.push_back(busInt);
+
+	}
+
+	unsigned long long int baseTime = 0;
+
+	while (!found && baseTime < ULONG_MAX)
+	{
+		size_t i = 0;
+		for (i = 0; i < busesAsInts.size(); i++)
+		{
+			if ((busesAsInts[i] < 1) || (((baseTime + i) % busesAsInts[i]) == 0))
+			{
+				found = true;
+
+			}
+			else
+			{
+				found = false;
+				break;
+			}
+
+		}
+
+		if (found)
+		{
+			cout << " found is true, i == size? " << (i == busesAsInts.size()) << endl;
+		}
+		else
+		{
+			//cout << " found is false, i == " << i << endl;
+			baseTime += busesAsInts[0];
+		}
+
+	}
+
+	return baseTime;
 }
 
