@@ -7,7 +7,7 @@
 #include <vector>
 #include <string>
 #include <map>
-
+#include <iomanip>
 
 //#include <boost/algorithm>
 //#include <boost/algorithm/string.hpp> 
@@ -44,13 +44,17 @@ int main(int argc, char** argv)
 		return -1;
 	}
 
-	cout << name << " part a : " << PartA(lines) << endl;
+	cout << "---> ABout to call Part A <----" << endl;
+	ulli partAout = PartA(lines);
+	cout << "---> Returned from Part A <----" << endl;
+
+	cout << name << " part a : " << partAout << endl;
 	cout << name << " part b : " << PartB(lines) << endl;
 
 	return 0;
 }
 
-#define MASK_LEN 36ULL
+#define MASK_LEN 35ULL
 #define KEEP_OP 1ULL
 #define REPLACE_OP  0ULL
 
@@ -101,7 +105,7 @@ void GetMask(const string& line, ulli& mask, ulli& opMask)
 		mask |= (bit << currShift);
 	}
 
-	cout << "final mask=" << mask << ", ops=" << opMask << endl;
+	cout << "final mask=" << std::hex << mask << ", ops=" << std::hex << opMask << std::dec << endl;
 
 }
 
@@ -122,7 +126,7 @@ void GetMemAndValue(const string& line, int& addr, ulli& value)
 	addr = stoi(addrStr);
 
 	string valStr = line.substr(rBracketPos + 3);
-	cout << " VALUE: " << valStr;
+	cout << " VALUE: " << valStr << endl;
 
 	value = stoull(valStr);
 
@@ -176,15 +180,19 @@ ulli PartA(vector<string>& lines)
 
 		value = DoMasking(value, bits, opMask);
 
-		memory.emplace(addr, value);
+		//memory.emplace(addr, value);
+		memory[addr] = value;
+		cout << " Set address = " << addr << " to value=" << value << endl;
 		curr++;
 	}
 
 	ulli sum = 0;
 
-	for (auto m : memory)
+	for (auto& m : memory)
 	{
+		
 		sum += m.second;
+		cout << " Adding memory: @" << m.first << " is " << m.second << ", total=" << sum << endl;
 	}
 
 	return sum;
