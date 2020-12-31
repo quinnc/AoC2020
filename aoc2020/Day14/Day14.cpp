@@ -49,7 +49,7 @@ int main(int argc, char** argv)
 	cout << "---> Returned from Part A <----" << endl;
 
 	cout << name << " part a : " << partAout << endl;
-	cout << name << " part b : " << PartB(lines) << endl;
+	//cout << name << " part b : " << PartB(lines) << endl;
 
 	return 0;
 }
@@ -121,12 +121,12 @@ void GetMemAndValue(const string& line, int& addr, ulli& value)
 
 	size_t rBracketPos = line.find(']');
 	string addrStr = line.substr(4, rBracketPos - 4);
-	cout << " ADDRESS: " << addrStr << endl;
+	//cout << " ADDRESS: " << addrStr << endl;
 
 	addr = stoi(addrStr);
 
 	string valStr = line.substr(rBracketPos + 3);
-	cout << " VALUE: " << valStr << endl;
+	//cout << " VALUE: " << valStr << endl;
 
 	value = stoull(valStr);
 
@@ -137,7 +137,7 @@ ulli DoMasking(const ulli& inValue, const ulli& bits, const ulli& opMask)
 	ulli i = 0;
 	ulli outVal = 0;
 
-	for (i = 0; i < MASK_LEN; i++)
+	for (i = 0; i <= MASK_LEN; i++)
 	{
 		ulli currOp = (opMask >> i) & 0x1;
 		if (currOp == KEEP_OP)
@@ -164,25 +164,29 @@ ulli PartA(vector<string>& lines)
 	map<int, ulli> memory;
 
 
-	GetMask(lines[0], bits, opMask);
-
-	size_t curr = 1;
+	size_t curr = 0;
 	while (curr < lines.size())
 	{
-
-		GetMemAndValue(lines[curr], addr, value);
-		if (addr < 1)
+		if (lines[curr][1] == 'a')
 		{
-			cout << "ERROR invalid address! " << lines[curr] << endl;
-			curr++;
-			continue;
+			GetMask(lines[curr], bits, opMask);
 		}
+		else
+		{
+			GetMemAndValue(lines[curr], addr, value);
+			if (addr < 1)
+			{
+				cout << "ERROR invalid address! " << lines[curr] << endl;
+				curr++;
+				continue;
+			}
 
-		value = DoMasking(value, bits, opMask);
+			value = DoMasking(value, bits, opMask);
 
-		//memory.emplace(addr, value);
-		memory[addr] = value;
-		cout << " Set address = " << addr << " to value=" << value << endl;
+			//memory.emplace(addr, value);
+			memory[addr] = value;
+			//cout << " Set address = " << addr << " to value=" << value << endl;
+		}
 		curr++;
 	}
 
@@ -192,7 +196,7 @@ ulli PartA(vector<string>& lines)
 	{
 		
 		sum += m.second;
-		cout << " Adding memory: @" << m.first << " is " << m.second << ", total=" << sum << endl;
+		//cout << " Adding memory: @" << m.first << " is " << m.second << ", total=" << sum << endl;
 	}
 
 	return sum;
