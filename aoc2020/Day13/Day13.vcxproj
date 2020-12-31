@@ -154,6 +154,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="example6.txt" />
     <Text Include="input.txt" />
     <Text Include="sample.txt" />
   </ItemGroup>
