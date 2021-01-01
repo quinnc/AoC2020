@@ -95,7 +95,7 @@ ulli PartA(vector<string>& lines)
 	int delta = -1;
 	int next = -1;
 
-	while (step <= 10)
+	while (step < 2020)
 	{
 		if (lastNumberFirstTime)
 		{
@@ -118,10 +118,11 @@ ulli PartA(vector<string>& lines)
 		}
 
 		trackMap[next] = step;
-		cout << "  Round " << step << " -- current number spoken=" << next << ", was this the first time? " << lastNumberFirstTime << ", delta? " << delta << endl;
+		//cout << "  Round " << step << " -- current number spoken=" << next << ", was this the first time? " << lastNumberFirstTime << ", delta? " << delta << endl;
 		step++;
 	}
 
+	cout << "  Round " << step-1 << " -- current number spoken=" << next << ", was this the first time? " << lastNumberFirstTime << ", delta? " << delta << endl;
 	return next;
 }
 

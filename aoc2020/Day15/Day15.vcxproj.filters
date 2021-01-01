@@ -22,4 +22,9 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="ex1.txt" />
+    <Text Include="ex2.txt" />
+    <Text Include="ex7.txt" />
+  </ItemGroup>
 </Project>
