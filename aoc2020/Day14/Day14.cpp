@@ -57,7 +57,7 @@ int main(int argc, char** argv)
 	cout << "---> About to call Part B <----" << endl;
 	ulli partBout = PartB(lines);
 	cout << "---> Returned from Part B <----" << endl;
-	cout << name << " part b : 0x" << partBout << std::dec << " == "  << partBout << endl;
+	cout << name << " part b : 0x" << std::hex << partBout << std::dec << " == "  << partBout << endl;
 
 	return 0;
 }
@@ -113,8 +113,7 @@ void GetMask(const string& line, ulli& mask, ulli& opMask)
 		mask |= (bit << currShift);
 	}
 
-	cout << " Got Mask --> mask=" << std::hex << mask << ", ops=" << std::hex << opMask << std::dec << endl;
-
+	//cout << " Got Mask --> mask=" << std::hex << mask << ", ops=" << std::hex << opMask << std::dec << endl;
 }
 
 void GetMemAndValue(const string& line, int& addr, ulli& value)
@@ -129,12 +128,12 @@ void GetMemAndValue(const string& line, int& addr, ulli& value)
 
 	size_t rBracketPos = line.find(']');
 	string addrStr = line.substr(4, rBracketPos - 4);
-	cout << " ADDRESS: " << addrStr << endl;
+	//cout << " ADDRESS: " << addrStr << endl;
 
 	addr = stoi(addrStr);
 
 	string valStr = line.substr(rBracketPos + 3);
-	cout << " VALUE: " << valStr << endl;
+	//cout << " VALUE: " << valStr << endl;
 
 	value = stoull(valStr);
 
@@ -168,7 +167,6 @@ ulli SumMemory(const map<IntType, ulli>& memory)
 
 	for (auto& m : memory)
 	{
-
 		sum += m.second;
 		//cout << " Adding memory: @" << m.first << " is " << m.second << ", total=" << sum << endl;
 	}
@@ -221,7 +219,7 @@ void MakeAddressList(const ulli& inAddr, const vector<int>& floatingBits, vector
 {
 	if (floatingBits.empty())
 	{
-		cout << " New address to set: " << std::hex<< inAddr << endl;
+		//cout << " New address to set: " << std::hex<< inAddr << endl;
 		outAddrs.push_back(inAddr);
 		return;
 	}
@@ -276,8 +274,7 @@ void DoAddressMasking(const ulli& inAddress, const ulli& bits, const ulli& opMas
 
 	}
 
-	cout << " Masked address: " << std::hex << outVal << ", incoming bit mask=" << bits << ", operation mask=" << opMask << endl;
-
+	//cout << " Masked address: " << std::hex << outVal << ", incoming bit mask=" << bits << ", operation mask=" << opMask << endl;
 	MakeAddressList(outVal, floatingBits, outAddrs);
 }
 
@@ -314,7 +311,7 @@ ulli PartB(vector<string>& lines)
 			for (const auto& addr2 : addresses)
 			{
 				memory[addr2] = value;
-				cout << " Set address = " << addr2 << " to value=" << value << endl;
+				//cout << " Set address = " << addr2 << " to value=" << value << endl;
 			}
 		}
 		curr++;
