@@ -151,6 +151,7 @@
     <ClCompile Include="Day14.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="example_partb.txt" />
     <Text Include="example.txt" />
     <Text Include="input.txt" />
   </ItemGroup>

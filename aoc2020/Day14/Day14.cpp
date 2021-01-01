@@ -17,7 +17,7 @@
 
 using namespace std;
 
-typedef unsigned long long int ulli;
+
 
 ulli PartA(vector<string>& lines);
 ulli PartB(vector<string>& lines);
@@ -28,6 +28,9 @@ int main(int argc, char** argv)
 	string name = argv[0];
 
 	name = name.substr(name.find_last_of('\\')+1);
+	cout << " int max = " << std::hex << std::numeric_limits<int>::max() << endl;
+	cout << " ulli max = " << std::hex << std::numeric_limits<ulli>::max() << endl;
+	cout << std::dec;
 
 	ShowInputs(argc, argv);
 
@@ -49,7 +52,12 @@ int main(int argc, char** argv)
 	cout << "---> Returned from Part A <----" << endl;
 
 	cout << name << " part a : " << partAout << endl;
-	//cout << name << " part b : " << PartB(lines) << endl;
+
+	cout << endl;
+	cout << "---> About to call Part B <----" << endl;
+	ulli partBout = PartB(lines);
+	cout << "---> Returned from Part B <----" << endl;
+	cout << name << " part b : 0x" << partBout << std::dec << " == "  << partBout << endl;
 
 	return 0;
 }
@@ -105,7 +113,7 @@ void GetMask(const string& line, ulli& mask, ulli& opMask)
 		mask |= (bit << currShift);
 	}
 
-	cout << "final mask=" << std::hex << mask << ", ops=" << std::hex << opMask << std::dec << endl;
+	cout << " Got Mask --> mask=" << std::hex << mask << ", ops=" << std::hex << opMask << std::dec << endl;
 
 }
 
@@ -121,12 +129,12 @@ void GetMemAndValue(const string& line, int& addr, ulli& value)
 
 	size_t rBracketPos = line.find(']');
 	string addrStr = line.substr(4, rBracketPos - 4);
-	//cout << " ADDRESS: " << addrStr << endl;
+	cout << " ADDRESS: " << addrStr << endl;
 
 	addr = stoi(addrStr);
 
 	string valStr = line.substr(rBracketPos + 3);
-	//cout << " VALUE: " << valStr << endl;
+	cout << " VALUE: " << valStr << endl;
 
 	value = stoull(valStr);
 
@@ -153,6 +161,20 @@ ulli DoMasking(const ulli& inValue, const ulli& bits, const ulli& opMask)
 	return outVal;
 }
 
+template <class IntType>
+ulli SumMemory(const map<IntType, ulli>& memory)
+{
+	ulli sum = 0;
+
+	for (auto& m : memory)
+	{
+
+		sum += m.second;
+		//cout << " Adding memory: @" << m.first << " is " << m.second << ", total=" << sum << endl;
+	}
+
+	return sum;
+}
 
 ulli PartA(vector<string>& lines)
 {
@@ -190,19 +212,115 @@ ulli PartA(vector<string>& lines)
 		curr++;
 	}
 
-	ulli sum = 0;
+	
+	return SumMemory(memory);
+}
 
-	for (auto& m : memory)
+
+void MakeAddressList(const ulli& inAddr, const vector<int>& floatingBits, vector<ulli>& outAddrs)
+{
+	if (floatingBits.empty())
 	{
-		
-		sum += m.second;
-		//cout << " Adding memory: @" << m.first << " is " << m.second << ", total=" << sum << endl;
+		cout << " New address to set: " << std::hex<< inAddr << endl;
+		outAddrs.push_back(inAddr);
+		return;
 	}
 
-	return sum;
+	vector<int> tempBits(floatingBits.size());
+	std::copy(floatingBits.begin(), floatingBits.end(), tempBits.begin());
+
+	int currBit = tempBits.back();
+	tempBits.pop_back();
+
+	ulli mask;
+
+	// set the current bit to 1 and do the rest of the bits
+	mask = inAddr | 1ULL << currBit;
+	MakeAddressList(mask, tempBits, outAddrs);
+
+	// clear the current bit and do the rest of the bits
+	mask = inAddr & ~(1ULL << currBit);
+	MakeAddressList(mask, tempBits, outAddrs);
+}
+
+
+
+
+void DoAddressMasking(const ulli& inAddress, const ulli& bits, const ulli& opMask, vector<ulli>& outAddrs)
+{
+	int i = 0;
+	ulli outVal = 0;
+	vector<int> floatingBits;
+
+	for (i = 0; i <= MASK_LEN; i++)
+	{
+		ulli currOp = (opMask >> i) & 0x1;
+		if (currOp == KEEP_OP)
+		{
+			floatingBits.push_back(i);
+		}
+		else
+		{
+			ulli currChangeBit = (bits >> i) & 0x1;
+			if (currChangeBit == 1)
+			{
+				// set to 1
+				outVal |= (1ULL << i);
+			}
+			else
+			{
+				//leave it unchanged
+				outVal |= (inAddress & (1ULL << i));
+			}
+		}
+
+	}
+
+	cout << " Masked address: " << std::hex << outVal << ", incoming bit mask=" << bits << ", operation mask=" << opMask << endl;
+
+	MakeAddressList(outVal, floatingBits, outAddrs);
 }
 
 ulli PartB(vector<string>& lines)
 {
-	return -11;
+	ulli bits, opMask;
+	int addr = 0;;
+	ulli value = 0;
+
+	map<ulli, ulli> memory;
+	vector<ulli> addresses;
+
+
+	size_t curr = 0;
+	while (curr < lines.size())
+	{
+		addresses.clear();
+		if (lines[curr][1] == 'a')
+		{
+			GetMask(lines[curr], bits, opMask);
+		}
+		else
+		{
+			GetMemAndValue(lines[curr], addr, value);
+			if (addr < 1)
+			{
+				cout << "ERROR invalid address! " << lines[curr] << endl;
+				curr++;
+				continue;
+			}
+
+			DoAddressMasking(addr, bits, opMask, addresses);
+
+			for (const auto& addr2 : addresses)
+			{
+				memory[addr2] = value;
+				cout << " Set address = " << addr2 << " to value=" << value << endl;
+			}
+		}
+		curr++;
+	}
+
+
+	return SumMemory(memory);
+
 }

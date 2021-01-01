@@ -5,3 +5,6 @@
 
 bool OpenAndReadInput(char* filename, std::vector<std::string>& lines);
 void ShowInputs(int argc, char** argv);
+
+
+typedef unsigned long long int ulli;
