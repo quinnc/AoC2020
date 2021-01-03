@@ -26,5 +26,6 @@
     <Text Include="ex1.txt" />
     <Text Include="ex2.txt" />
     <Text Include="ex7.txt" />
+    <Text Include="input.txt" />
   </ItemGroup>
 </Project>

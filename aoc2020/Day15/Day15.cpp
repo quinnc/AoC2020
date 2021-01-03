@@ -73,7 +73,7 @@ int main(int argc, char** argv)
 
 
 
-ulli PartA(vector<string>& lines)
+ulli PlayGame(vector<string>& lines, int totalSteps)
 {
 
 	// map of number to the last turn number it was spoken
@@ -95,7 +95,7 @@ ulli PartA(vector<string>& lines)
 	int delta = -1;
 	int next = -1;
 
-	while (step < 2020)
+	while (step < totalSteps)
 	{
 		if (lastNumberFirstTime)
 		{
@@ -127,8 +127,15 @@ ulli PartA(vector<string>& lines)
 }
 
 
+
+ulli PartA(vector<string>& lines)
+{
+
+	return PlayGame(lines, 2020);
+}
+
 ulli PartB(vector<string>& lines)
 {
 
-	return -10;
+	return PlayGame(lines, 30000000);
 }
