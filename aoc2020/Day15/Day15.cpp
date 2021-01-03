@@ -72,12 +72,14 @@ int main(int argc, char** argv)
 }
 
 
+#define MAX_MAPS 10
 
 ulli PlayGame(vector<string>& lines, int totalSteps)
 {
-
 	// map of number to the last turn number it was spoken
+	//unordered_map<int, int> trackMapArray[MAX_MAPS+1];
 	map<int, int> trackMap;
+
 	int step = 0;
 
 	vector<string> inputNumbers;
@@ -87,6 +89,7 @@ ulli PlayGame(vector<string>& lines, int totalSteps)
 	for (const auto& numStr : inputNumbers)
 	{
 		int n = stoi(numStr);
+		//trackMapArray[0][n] = step;
 		trackMap[n] = step;
 		step++;
 	}
@@ -105,6 +108,12 @@ ulli PlayGame(vector<string>& lines, int totalSteps)
 		{
 			next = delta;
 		}
+
+		int index = next / 1000000;
+		if (index > MAX_MAPS)
+			index = MAX_MAPS;
+
+		//unordered_map<int, int>& trackMap = trackMapArray[index];
 
 		if (trackMap.find(next) == trackMap.end())
 		{
